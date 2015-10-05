@@ -1,0 +1,5 @@
+web: python routes.py
+db:      rethinkdb
+redis:   redis-server 
+brunch:  sh -c 'cd ../client && brunch watch --server'
+tests:  nosetests -v --with-watch --nocapture

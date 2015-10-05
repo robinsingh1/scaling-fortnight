@@ -1,0 +1,140 @@
+// Apply a natural box layout model to all elements.
+// http://paulirish.com/2012/box-sizing-border-box-ftw/
+
+html
+  box-sizing: border-box
+  font-family: 'proxima-nova'
+
+*, *:before, *:after
+  box-sizing: inherit
+
+.action-btn
+  display: block;
+  float: left;
+  border-right: 0px !important;
+  border-radius: 3px 0px 0px 3px !important;
+  margin-left: 4px;
+  border-right: 0px;
+  width: 78px;
+
+.action-badge
+  font-size: 12px;
+  border: 1px solid rgb(204, 204, 204);
+  padding: 2px;
+  padding-bottom: 1px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-right-radius: 3px !important;
+  border-bottom-right-radius: 3px !important;
+  font-weight: 300;
+  display:inline-block
+
+.nav-tabs
+  li
+    width:20% !important
+    text-align:center
+  a
+    color:#bbb !important
+    border-top: 3px solid #fff !important
+  font-size:12px !important
+  font-weight:300 !important
+  li.active a
+    color:#0079ff !important
+    font-weight: 600 !important
+    border-top: 3px solid #0079ff !important
+
+.dataset-table
+  tr
+    height:75px
+    cursor:pointer !important
+    &:hover
+      background-color: #eef6ff !important
+  .header-row
+    cursor:auto !important
+    &:hover
+      background-color: #fff !important
+  td
+    vertical-align:middle !important
+  
+.section-title
+  font-weight: 800;
+  font-size: 28px;
+  margin-left: 3px;
+
+.btn-success
+  color: white !important
+  background: #15CD72 !important
+  border: 1px solid #15CD72 !important
+
+.app
+  font-family: 'proxima-nova'
+
+.app-logo
+  float:left
+  margin-right:100px !important
+  margin-top:5px !important
+  img
+    height:22px
+    float:left
+  div
+    display: inline;
+    margin-top: -5px;
+    margin-left: 4px;
+    font-size: 20px;
+    font-weight: 800;
+
+.btn
+  border-radius:3px !important
+  font-size:12px
+  font-weight:bold
+
+.btn-primary
+  background-color:#0079ff !important
+  border-color: #0072f0 !important
+
+.center-item
+  display:block
+  margin-left:auto
+  margin-right:auto
+
+ul
+  list-style-type: none !important
+
+.dataset-detail
+  padding:0px
+  padding-left:5px
+  li
+    display:inline !important
+    padding-right:20px
+    color:#bbbbbb
+  
+
+.header
+  padding-bottom:35px
+  ul
+    padding:25px
+    margin: 5px 0
+    text-align: center
+    li
+      display:inline
+      float:left
+      font-size:12px
+      margin-left:50px
+      margin-right:25px
+      margin-top:9px
+      cursor:pointer
+      a
+        display: inline-block
+        text-decoration: none
+        color: #3f894a
+        padding: 4px 15px
+
+        &.last-link
+          padding-left: 9px;
+
+        &:visited
+          color: #3f894a
+
+        &:hover
+          color: #27552e
+          border-color: #27552e

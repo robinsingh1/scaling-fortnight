@@ -1,0 +1,81 @@
+{
+  "name": "your-app",
+  "version": "0.0.1",
+  "main": "public/app.js",
+  "dependencies": {
+    "react": "~0.13.3",
+    "react-router": "~0.13.3",
+    "bootstrap": "~3.3.5",
+    "fixed-data-table": "~0.4.1",
+    "underscore": "~1.8.3",
+    "moment": "~2.10.6",
+    "react-bootstrap": "~0.24.2",
+    "bower-bootstrap-slider": "~1.0.0",
+    "react-tagsinput": "~1.4.0",
+    "awesome-bootstrap-checkbox": "~0.3.4",
+    "bootstrap-datepicker": "~1.4.0",
+    "datepair.js": "~0.4.9",
+    "react-tageditor": "*",
+    "jquery-ui": "~1.11.4",
+    "fontawesome": "~4.4.0",
+    "dropzone": "git@github.com:felixrieseberg/React-Dropzone-Component.git"
+  },
+  "overrides": {
+    "react-router": {
+      "dependencies": {
+        "react": "*"
+      }
+    },
+    "dropzone": {
+      "main": [
+        "dist/dropzone.js"
+      ]
+    },
+    "fixed-data-table": {
+      "main": [
+        "dist/fixed-data-table.js"
+      ]
+    },
+    "react-tagsinput": {
+      "main": [
+        "react-tagsinput.js"
+      ]
+    },
+    "react-tageditor": {
+      "main": [
+        "dist/TagEditor.js"
+      ]
+    },
+    "bootstrap-slider": {
+      "main": [
+        "dist/bootstrap-slider.min.js"
+      ]
+    },
+    "react-slider": {
+      "main": [
+        "dist/slider.js"
+      ]
+    },
+    "rc-slider": {
+      "main": [
+        "src/index.js"
+      ]
+    },
+    "jquery-ui": {
+      "main": [
+        "jquery-ui.js"
+      ]
+    },
+    "font-awesome": {
+      "main": ["fonts", "css"]
+    },
+    "jqslider": {
+      "main": [
+        "bin/jquery.slider.min.js"
+      ]
+    }
+  },
+  "resolutions": {
+    "react": "~0.13.3"
+  }
+}

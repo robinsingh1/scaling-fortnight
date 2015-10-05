@@ -1,0 +1,35 @@
+/* * * App * * */
+
+.logo {
+  font-weight: bold;
+  font-size: 27px;
+  float:left
+}
+.auth-logo {
+  font-weight: bold;
+  font-size: 27px;
+}
+.logo-image {
+  height: 27px;
+  margin-top: -4px;
+}
+.login-btn {
+  float: right;
+  margin-right: 100px;
+  margin-top: 25px;
+}
+.tagline {
+  font-weight: bold;
+  font-size: 25px;
+  padding-top: 15px;
+}
+#signup-btn {
+}
+#main-img {
+  margin-top: 200px;
+  height: 150px;
+}
+
+.input-lg {
+  border-radius:3px !important;
+}
