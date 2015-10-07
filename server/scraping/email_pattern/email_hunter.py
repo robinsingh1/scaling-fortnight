@@ -41,4 +41,5 @@ class EmailHunter:
         if "pattern" in res.keys():
           del res["emails"]
           conn = r.connect(host="localhost", port=28015, db="triggeriq")
-          r.table('hiring_signals').get(_id).update({"email_pattern":res}).run(conn)
+          #r.table('hiring_signals').get(_id).update({"email_pattern":res}).run(conn)
+          r.table('triggers').get(_id).update({"email_pattern":res}).run(conn)

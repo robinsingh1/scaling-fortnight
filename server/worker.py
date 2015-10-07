@@ -22,7 +22,8 @@ bugsnag.configure(
 
 try:
   opts, args = getopt.getopt(sys.argv[1:],"c:",[])
-except getopt.GetoptError:
+except getopt.GetoptError as e:
+  print e
   print 'worker.py -c <concurrency>'
   sys.exit(2)
 for opt, arg in opts:

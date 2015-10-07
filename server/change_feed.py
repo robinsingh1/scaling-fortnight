@@ -1,7 +1,6 @@
 import tornado.ioloop
 import logging
 import tornado.web
-from tornadotools.route import Route
 import rethinkdb as r
 from tornado import ioloop, gen
 from schedule import * 
@@ -10,6 +9,7 @@ from scraping.company_api.company_name_to_domain import CompanyNameToDomain
 from scraping.email_pattern.email_hunter import EmailHunter
 from scraping.email_pattern.clearbit_search import ClearbitSearch
 from scraping.employee_search.employee_search import GoogleSearch
+from tornadotools.route import Route
 
 import rethinkdb as r
 import json
@@ -21,6 +21,7 @@ from rq import Queue
 from worker import conn
 q = Queue(connection=conn)
 
+#change_feed: python -u change_feed.py
 
 @gen.coroutine
 def print_changes():
@@ -28,6 +29,7 @@ def print_changes():
     feed = yield r.db('change_example').table('mytable').changes().run(rethink_conn)
     while (yield feed.fetch_next()):
         change = yield feed.next()
+        print "lol"
         print change
 
 @gen.coroutine
@@ -37,15 +39,18 @@ def email_pattern():
     while (yield feed.fetch_next()):
         change = yield feed.next()
         print "EMAIL PATTERN CHANGE FEED"
+        print "lol"
         print change
         # score email_pattern_crawl
 
 @gen.coroutine
 def hiring_signals():
     rethink_conn = yield r.connect(host="localhost", port=28015, db="triggeriq")
-    feed = yield r.table('hiring_signals').changes().run(rethink_conn)
+    #feed = yield r.table('hiring_signals').changes().run(rethink_conn)
+    feed = yield r.table('triggers').changes().run(rethink_conn)
     while (yield feed.fetch_next()):
         change = yield feed.next()
+        print "lol"
         print change
         if change["old_val"] == None:
             val = change["new_val"]
@@ -87,18 +92,18 @@ class SimpleHandler3(tornado.web.RequestHandler):
 @Route(r"/profiles")
 class SimpleHandler4(tornado.web.RequestHandler):
     def get(self):
-        # TODO - get all routes which belong to
+        # TODO - get all routes which belong to certain user
         self.write( {"lol":"lmao"} )
 
-@Route(r"/signals")
-class SimpleHandler4(tornado.web.RequestHandler):
+@Route(r"/triggers")
+class SimpleHandler5(tornado.web.RequestHandler):
     def get(self):
-        # TODO - get all routes which belong to
+        # get all routes which belong to user or profile
         # TODO - include employees
         self.write( {"lol":"lmao"} )
 
 @Route(r"/signals")
-class SimpleHandler4(tornado.web.RequestHandler):
+class SimpleHandler6(tornado.web.RequestHandler):
     def get(self):
         # TODO - get all routes which belong to
         self.write( {"lol":"lmao"} )
@@ -106,7 +111,8 @@ class SimpleHandler4(tornado.web.RequestHandler):
 app = tornado.web.Application(Route.routes())
 
 if __name__ == "__main__":
-    app.listen(8988)
+    #app.listen(8988)
+    #app.listen(8000)
     #app.listen(5000)
     tornado.ioloop.IOLoop.current().add_callback(print_changes)
     tornado.ioloop.IOLoop.current().add_callback(hiring_signals)

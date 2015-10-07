@@ -63,3 +63,4 @@ class SimplyHired:
 
         conn = r.connect(host="localhost", port=28015, db="triggeriq")
         r.table("hiring_signals").insert(companies.to_dict('r')).run(conn)
+        r.table("triggers").insert(companies.to_dict('r')).run(conn)

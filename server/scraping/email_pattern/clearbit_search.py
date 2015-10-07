@@ -36,7 +36,8 @@ class ClearbitSearch:
       company = clearbit.Company.find(domain=domain, stream=True)
       company = company if company else {}
       conn = r.connect(host="localhost", port=28015, db="triggeriq")
-      r.table('hiring_signals').get(_id).update({"company_info": company}).run(conn)
+      #r.table('hiring_signals').get(_id).update({"company_info": company}).run(conn)
+      r.table('triggers').get(_id).update({"company_info": company}).run(conn)
       # TODO update company
 
   def _update_person_record(self, email, _id):
