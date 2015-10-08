@@ -13,6 +13,8 @@ app = Flask(__name__, static_url_path="", static_folder="client")
 # - logout
 # - make it work in dokku
 # - deploy from brunch to flask app
+# -
+
 
 @app.route("/login")
 def login():

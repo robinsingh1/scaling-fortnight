@@ -43,7 +43,7 @@ class Signals:
             for locale in profile["locales"]:
                 _args = [role, locale, _profile["id"], country]
                 print "THIS IS THE COUNTRY", country, locale
-                #job_3 = q.enqueue(ZipRecruiter()._signal, *_args, timeout=6000)
+                job_3 = q.enqueue(ZipRecruiter()._signal, *_args, timeout=6000)
                 job_0 = q.enqueue(Indeed()._cron, *_args, timeout=6000)
                 job_2 = q.enqueue(SimplyHired()._signal, *_args, timeout=6000)
                 #job_1 = q.enqueue(Monster()._signal, *_args, timeout=6000)
@@ -102,7 +102,8 @@ class Signals:
         profiles = list(r.table("prospect_profiles").run(conn))
         for profile in profiles:
             _profile = [i["className"] for i in profile["profiles"]]
-            print _profile
+            #print _profile
+            print "DEPLOYBOT"
             if 'HiringProfile' in _profile: 
                 print "started"
                 q.enqueue(Signals()._hiring, profile, timeout=6000)
