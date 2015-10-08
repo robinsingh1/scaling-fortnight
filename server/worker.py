@@ -32,7 +32,7 @@ for opt, arg in opts:
 
 listen = ['high', 'default', 'low']
 
-redis_url = os.getenv('REDISCLOUD_URL', 'redis://localhost:6379')
+redis_url = os.getenv('REDIS_URL', 'redis://localhost:6379')
 conn = redis.from_url(redis_url)
 
 def work():

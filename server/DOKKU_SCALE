@@ -1,0 +1,5 @@
+web=1
+change_feed=1
+worker=5
+clock=1
+redis=1

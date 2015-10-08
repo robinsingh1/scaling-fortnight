@@ -1,5 +1,8 @@
-web: python routes.py
-db:      rethinkdb
-redis:   redis-server 
+redis: redis-server
+web: python -u routes.py
+change_feed: python -u change_feed.py
+worker: python -u worker.py -c 5
+clock: python -u clock.py 
 brunch:  sh -c 'cd ../client && brunch watch --server'
 tests:  nosetests -v --with-watch --nocapture
+splash: python -m splash.server --port=8950

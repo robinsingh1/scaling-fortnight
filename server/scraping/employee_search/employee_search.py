@@ -101,6 +101,10 @@ class GoogleSearch:
         results = Google()._google_df_to_linkedin_df(results)
         _name = '(?i){0}'.format(company_name)
         print results.columns
+        if results.empty: 
+            print "No employees found for", company_name, keyword, api_key
+            return results
+
         if " " in company_name:
             results['company_score'] = [fuzz.partial_ratio(_name, company) 
                                         for company in results.company_name]
@@ -129,6 +133,6 @@ class GoogleSearch:
 
     def _update_record(self, company_name, keyword, _id):
         res = self._employees(company_name, keyword, _id)
-        print res
+        print "EMPLOYEES FOUND", company_name, res.shape
         conn = r.connect(host="localhost", port=28015, db="triggeriq")
         r.table('company_employees').insert(res.to_dict("r")).run(conn)

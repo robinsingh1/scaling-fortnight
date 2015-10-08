@@ -1,4 +1,3 @@
-import pandas as pd
 from rq import Queue
 from worker import conn
 q = Queue(connection=conn)
@@ -12,6 +11,7 @@ from job_board.simply_hired import SimplyHired
 from job_board.zip_recruiter import ZipRecruiter
 from job_board.hiring_signal import HiringSignal
 from press.press import *
+import pandas as pd
 
 class Signals:
     def _old_hiring(self, profile_id):

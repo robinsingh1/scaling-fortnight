@@ -6,22 +6,31 @@ import urlparse
 
 class CompanyNameToDomain:
     def get(self, company_name):
-        #dd = DuckDuckGo().search(company_name)
+        dd = DuckDuckGo().search(company_name)
         g  = Google().search(company_name)
         yd = Yandex().search(company_name)
         bg = Bing().search(company_name)
 
-        #print dd.shape
-        #print g.shape
-        #print yd.shape
-        #print bg.shape
+        print "SEARCH ENGINE RESULTS", company_name
+        print "===================="
+        print g.shape, company_name
+        print bg.shape, company_name
+        print dd.shape, company_name
+        print yd.shape, company_name
+
+        if g.empty: g = pd.DataFrame(columns=["link","domain"])
+        if yd.empty: yd = pd.DataFrame(columns=["link","domain"])
+        if bg.empty: bg = pd.DataFrame(columns=["link","domain"])
+        if dd.empty: dd = pd.DataFrame(columns=["link","domain"])
 
         #m = pd.concat([dd.ix[:10],g.ix[:10],yd.ix[:10],bg.ix[:10]])
         g["domain"] = [".".join(urlparse.urlparse(i).netloc.split(".")[-2:]) for i in g.link]
-        yd["domain"] = [".".join(urlparse.urlparse(i).netloc.split(".")[-2:]) for i in yd.link]
+        yd["domain"] = [".".join(urlparse.urlparse(i).netloc.split(".")[-2:]) if i else "" for i in yd.link]
         bg["domain"] = [".".join(urlparse.urlparse(i).netloc.split(".")[-2:]) for i in bg.link]
+        dd["domain"] = [".".join(urlparse.urlparse(i).netloc.split(".")[-2:]) if i else "" for i in dd.link]
         m = pd.concat([g.ix[:10].drop_duplicates("domain"),
                        yd.ix[:10].drop_duplicates("domain"),
+                       dd.ix[:10].drop_duplicates("domain"),
                        bg.ix[:10].drop_duplicates("domain")])
         m = m.reset_index()
         m["domain"] = [".".join(urlparse.urlparse(i).netloc.split(".")[-2:]) for i in m.link]

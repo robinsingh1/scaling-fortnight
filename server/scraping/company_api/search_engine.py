@@ -6,11 +6,18 @@ import urllib
 
 class DuckDuckGo:
     def search(self, company_name):
+        qry = urllib.urlencode({"q":company_name})
+        url = "https://duckduckgo.com/?{0}".format(qry)
+        _p = {"url":url, "timeout": 10, "wait": 0.5}
+        html = requests.get("http://localhost:8950/render.html",params=_p).text
+
+        """
         browser = Browser("chrome")
         #browser.visit("https://duckduckgo.com/?q=Sunstate+Equipment+Company")
-        qry = urllib.urlencode({"q":company_name})
         browser.visit("https://duckduckgo.com/?{0}".format(qry))
         html = browser.html
+        """
+
         bs = BeautifulSoup(html)
         dd = []
         for row in bs.find_all("div",{"class":"result"})[1:]:
@@ -48,13 +55,19 @@ class Bing:
     
 class Yandex:
     def search(self, company_name):
-        browser = Browser("phantomjs")
-        #browser.visit("https://www.yandex.com/search/?lr=87&text=Sunstate%20Equipment%20Company")
-        #qry = "text="+company_name.replace(" ","%20")
         qry = urllib.urlencode({"text":company_name})
+        url ="https://www.yandex.com/search/?{0}".format(qry)
+
+        
+        #browser = Browser("phantomjs")
+        #browser.visit("https://www.yandex.com/search/?lr=87&text=Sunstate%20Equipment%20Company")
+        """
         browser.visit("https://www.yandex.com/search/?{0}".format(qry))
         html = browser.html
-
+        browser.quit()
+        """
+        _p = {"url":url, "timeout": 10, "wait": 0.5}
+        html = requests.get("http://localhost:8950/render.html",params=_p).text
         bs = BeautifulSoup(html)
 
         yd = []

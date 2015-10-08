@@ -111,7 +111,7 @@ class SimpleHandler6(tornado.web.RequestHandler):
 app = tornado.web.Application(Route.routes())
 
 if __name__ == "__main__":
-    #app.listen(8988)
+    app.listen(8988)
     #app.listen(8000)
     #app.listen(5000)
     tornado.ioloop.IOLoop.current().add_callback(print_changes)
