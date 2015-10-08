@@ -103,6 +103,7 @@ class Signals:
         for profile in profiles:
             _profile = [i["className"] for i in profile["profiles"]]
             #print _profile
+
             print "DEPLOYBOT"
             if 'HiringProfile' in _profile: 
                 print "started"
