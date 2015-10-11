@@ -60,6 +60,7 @@ class CompanyNameToDomain:
         domain = self.get(company_name)
         conn = r.connect(host="localhost", port=28015, db="triggeriq")
         #r.table('hiring_signals').get(_id).update({"domain":domain}).run(conn)
-        r.table('triggers').get(_id).update({"domain":domain}).run(conn)
+        print _id, domain
+        print r.table('triggers').filter({"company_key":_id}).update({"domain":domain}, return_changes=True).run(conn)
 
 #CompanyName().get("facebook inc")

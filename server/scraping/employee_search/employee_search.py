@@ -77,7 +77,7 @@ class LinkedinTitleDir:
 
     return p
 
-class GoogleSearch:
+class GoogleEmployeeSearch:
     def test(self, company_name):
         job = rq.get_current_job()
         print job.meta.keys()

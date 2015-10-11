@@ -22,7 +22,7 @@ class SimplyHired:
         for job in html.find_all('div',{'class':'job'}):
             title = job.find('h2')
             company = job.find('a',{"itemprop":"name"})
-            print company
+            #print company
             location = job.find('span',{'class':'location'})
             desc = job.find('p',{'class':'description'})
             posted = job.find('span',{'class':'ago'})
@@ -43,7 +43,7 @@ class SimplyHired:
         print "Simply Hired"
         html = self._html(qry, page, locale, country)
         listings = self._listings(html)
-        print listings
+        #print listings
         if listings.empty: return "none found"
         while 'day' not in listings.date.tolist()[-1]:
             page = page + 1
@@ -55,7 +55,7 @@ class SimplyHired:
         listings = listings.drop_duplicates('company_name')
         listings['source'] = 'Simply Hired'
         listings["profile"] = profile
-        print listings
+        #print listings
         companies = listings
 
         keys = [row.company_name.lower().replace(" ","")+"_"+profile for i, row in companies.iterrows()]

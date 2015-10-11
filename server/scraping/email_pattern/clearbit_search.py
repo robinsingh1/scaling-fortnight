@@ -12,8 +12,8 @@ import rethinkdb as r
 
 clearbit.key = 'dc80f4192b73cca928f4e7c284b46573'
 from rq import Queue
-from worker import conn
-q = Queue(connection=conn)
+from worker import conn as _conn
+q = Queue(connection=_conn)
 
 class ClearbitSearch:
   def _company_profile(self, company_name, api_key=""):
@@ -33,11 +33,14 @@ class ClearbitSearch:
       #CompanyInfoCrawl()._persist(company, "clearbit", api_key)
 
   def _update_company_record(self, domain, _id):
-      company = clearbit.Company.find(domain=domain, stream=True)
-      company = company if company else {}
+      print "UPDATE COMPANY RECORD"
       conn = r.connect(host="localhost", port=28015, db="triggeriq")
-      #r.table('hiring_signals').get(_id).update({"company_info": company}).run(conn)
-      r.table('triggers').get(_id).update({"company_info": company}).run(conn)
+      company = [i for i in r.table('companies').filter({"domain":domain}).run(conn)]
+      if not company:
+          company = clearbit.Company.find(domain=domain, stream=True)
+          company = company if company else {}
+          r.table('companies').insert(company)
+      #print r.table('triggers').filter({"company_key":_id}).update({"company_info":company}, return_changes=True).run(conn)
       # TODO update company
 
   def _update_person_record(self, email, _id):
@@ -45,6 +48,7 @@ class ClearbitSearch:
       company = clearbit.Person.find(email=email, stream=True)
       company = company if company else None
       conn = r.connect(host="localhost", port=28015, db="triggeriq")
+      #r.table('company_employees').get(_id).update({"social_info": company}).run(conn)
       r.table('company_employees').get(_id).update({"social_info": company}).run(conn)
 
   def _bulk_update_employee_record(self, _id, pattern, domain):

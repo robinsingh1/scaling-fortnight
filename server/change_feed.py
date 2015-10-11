@@ -8,7 +8,7 @@ from routes import app
 from scraping.company_api.company_name_to_domain import CompanyNameToDomain
 from scraping.email_pattern.email_hunter import EmailHunter
 from scraping.email_pattern.clearbit_search import ClearbitSearch
-from scraping.employee_search.employee_search import GoogleSearch
+from scraping.employee_search.employee_search import GoogleEmployeeSearch
 from tornadotools.route import Route
 
 import rethinkdb as r
@@ -18,8 +18,11 @@ import json
 r.set_loop_type("tornado")
 
 from rq import Queue
-from worker import conn
-q = Queue(connection=conn)
+from worker import conn as _conn
+
+q = Queue("low", connection=_conn)
+default_q = Queue("default", connection=_conn)
+high_q = Queue("high", connection=_conn)
 
 #change_feed: python -u change_feed.py
 
@@ -44,40 +47,84 @@ def email_pattern():
         # score email_pattern_crawl
 
 @gen.coroutine
+def old_hiring_signals():
+    rethink_conn = yield r.connect(host="localhost", port=28015, db="triggeriq")
+    #feed = yield r.table('hiring_signals').changes().run(rethink_conn)
+    feed = yield r.table('triggers').changes().run(rethink_conn)
+    while (yield feed.fetch_next()):
+        change = yield feed.next()
+        if change["old_val"] == None:
+            val = change["new_val"]
+            q.enqueue(CompanyNameToDomain()._update_record, 
+                      val["company_name"], val["company_key"])
+            q.enqueue(GoogleEmployeeSearch()._update_record, 
+                      val["company_name"], "", val["company_key"])
+
+        if "domain" in change["new_val"]:
+            #if change["old_val"] == None or "domain" not in change["old_val"]:
+            print "SECOND TIME ROUND"
+            val = change["new_val"]
+            default_q.enqueue(ClearbitSearch()._update_company_record, 
+                      val["domain"], val["company_key"])
+            high_q.enqueue(EmailHunter()._update_record, 
+                      val["domain"], val["company_key"])
+
+        if "email_pattern" in change["new_val"]: 
+            #if change["old_val"] == None or "email_pattern" not in change["old_val"]:
+            print "EMAIL_PATTERN"
+            pattern = change["new_val"]["email_pattern"]
+            high_q.enqueue(ClearbitSearch()._bulk_update_employee_record, 
+                      change["new_val"]["company_key"],
+                      change["new_val"]["email_pattern"]["pattern"],
+                      change["new_val"]["domain"])
+
+@gen.coroutine
 def hiring_signals():
     rethink_conn = yield r.connect(host="localhost", port=28015, db="triggeriq")
     #feed = yield r.table('hiring_signals').changes().run(rethink_conn)
     feed = yield r.table('triggers').changes().run(rethink_conn)
     while (yield feed.fetch_next()):
         change = yield feed.next()
-        print "lol"
-        print change
         if change["old_val"] == None:
             val = change["new_val"]
-            q.enqueue(CompanyNameToDomain()._update_record, val["company_name"], val["company_key"])
-            q.enqueue(GoogleSearch()._update_record, val["company_name"], "", val["company_key"])
+            q.enqueue(CompanyNameToDomain()._update_record, 
+                      val["company_name"], val["company_key"])
+            q.enqueue(GoogleEmployeeSearch()._update_record, 
+                      val["company_name"], "", val["company_key"])
 
         if "domain" in change["new_val"]:
-            if change["old_val"] == None or "domain" not in change["old_val"]:
-                val = change["new_val"]
-                q.enqueue(ClearbitSearch()._update_company_record, val["domain"], val["company_key"])
-                q.enqueue(EmailHunter()._update_record, val["domain"], val["company_key"])
+            #if change["old_val"] == None or "domain" not in change["old_val"]:
+            print "SECOND TIME ROUND"
+            val = change["new_val"]
+            q.enqueue(ClearbitSearch()._update_company_record, 
+                      val["domain"], val["company_key"])
+            q.enqueue(EmailHunter()._update_record, 
+                      val["domain"], val["company_key"])
 
         if "email_pattern" in change["new_val"]: 
-            if change["old_val"] == None or "email_pattern" not in change["old_val"]:
-                print "email_pattern"
-                pattern = change["new_val"]["email_pattern"]
-                q.enqueue(ClearbitSearch()._bulk_update_employee_record, 
-                          change["new_val"]["company_key"],
-                          change["new_val"]["email_pattern"]["pattern"],
-                          change["new_val"]["domain"])
+            #if change["old_val"] == None or "email_pattern" not in change["old_val"]:
+            print "EMAIL_PATTERN"
+            pattern = change["new_val"]["email_pattern"]
+            q.enqueue(ClearbitSearch()._bulk_update_employee_record, 
+                      change["new_val"]["company_key"],
+                      change["new_val"]["email_pattern"]["pattern"],
+                      change["new_val"]["domain"])
 
 ''' Application Routes '''
-@Route(r"/")
+@Route(r"/trigger_research")
 class SimpleHandler(tornado.web.RequestHandler):
     def get(self):
         #self.write("Hello, world")
-        self.write( {"lol":"lmao"} )
+        conn = yield r.connect(host="localhost", port=28015, db="triggeriq")
+        feed = yield r.table('triggers').changes().run(conn)
+        while (yield feed.fetch_next()):
+            val = yield feed.next()
+            q.enqueue(CompanyNameToDomain()._update_record, 
+                      val["company_name"], val["company_key"])
+            q.enqueue(GoogleEmployeeSearch()._update_record, 
+                      val["company_name"], "", val["company_key"])
+
+        self.write( {"print":"research"} )
 
 @Route(r"/test_with_name", name="test")
 class SimpleHandler2(tornado.web.RequestHandler):

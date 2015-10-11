@@ -131,6 +131,171 @@ module.exports = CheckboxGroup
 
 });
 
+;require.register("company_card", function(exports, require, module) {
+var CompanyCard = React.createClass({displayName: 'CompanyCard',
+  toggleCompanyDetailOverlay: function() {
+    console.log("toggle")
+    this.props.toggleCompanyDetailOverlay(this.props)
+  },
+
+  render: function() {
+    console.log(this.props)
+    return (
+      React.createElement("div", {className: "", 
+            onClick: this.toggleCompanyDetailOverlay}, 
+              React.createElement("table", null, 
+                React.createElement("tbody", null, 
+                  React.createElement("tr", null, 
+                    React.createElement("td", null, 
+                     React.createElement("a", {href: "javascript:", className: "thumbnail", 
+                        style: {height:55,width:55,marginRight:15,float:"left",marginBottom:0}}, 
+                        React.createElement("img", {src: this.props.trigger.company_info.logo, alt: "..."})
+                      )
+                    ), 
+                    React.createElement("td", {style: {padding:5,width:"35%"}}, 
+                      React.createElement("a", {href: "javascript:", style: {color:"black"}}, 
+                      React.createElement("h5", {style: {fontSize:18}}, 
+                        this.props.trigger.company_name)
+                      ), 
+                      React.createElement("div", {className: "ellipsis", style: {width:300,fontSize:10}}, 
+                        this.props.trigger.company_info.description
+                      )
+                    ), 
+
+                    React.createElement(HiringSignalInfo, null), 
+                    React.createElement(EmployeeInfo, {employees: this.props.employees}), 
+
+
+                    React.createElement("td", {style: {padding:5}}, 
+                      React.createElement("a", {href: "javascript:", className: "btn btn-primary btn-sm"}, React.createElement("i", {className: "fa fa-download"}))
+                    )
+                  )
+                )
+              )
+            )
+    )
+  }
+})
+
+var DetailLabel = React.createClass({displayName: 'DetailLabel',
+  render: function() {
+    return (
+      React.createElement("label", {style: {border:"3px solid #eee",fontWeight:800,float:"left",color:"#ddd",marginRight:5, borderRadius:5,paddingLeft:5,paddingRight:5,display:"block",fontSize:11}}, " ", this.props.text, " ")
+    )
+  } 
+})
+
+var HiringSignalInfo = React.createClass({displayName: 'HiringSignalInfo',
+  render: function() {
+    return (
+      React.createElement("td", {style: {padding:5,width:"35%"}}, 
+        React.createElement("h5", null), 
+        React.createElement("h5", null, React.createElement("small", null, "Tweeted out this workd blah blah")), 
+        React.createElement(DetailLabel, {text: "INDEED"}), 
+        React.createElement(DetailLabel, {text: "HIRING SIGNAL"})
+      )
+    )
+  }
+})
+
+var UserPic = React.createClass({displayName: 'UserPic',
+  render: function() {
+    return (
+      React.createElement("div", {style: {height:30,width:30,border:"2px solid white",oldBoxShadow:"0px 2px 4px 0px rgba(0,0,0,0.30)",backgroundImage:"url('images/user.png')",backgroundSize:"cover",borderRadius:25,display:"inline-block",marginLeft:-13}}, " ")
+    )
+
+  }
+})
+
+var EmployeeInfo = React.createClass({displayName: 'EmployeeInfo',
+  render: function() {
+    length = (this.props.employees.length > 3) ? 3 : this.props.employees.length
+    users = []
+    for(i=0;i< length; i++)
+      users.push(React.createElement(UserPic, null))
+
+    return (
+        React.createElement("td", {style: {padding:5,width:"35%"}}, 
+          React.createElement("h5", null), 
+          (this.props.employees.length) ? React.createElement("div", null, users, 
+          React.createElement("div", {style: {color: "#aaa",marginTop: -30, marginLeft: 65,fontSize:13}}, 
+            this.props.employees.length + " employees"
+          )
+          ) : ""
+        )
+    )
+  }
+})
+/*
+                      <div style={{height:25,width:25,border:"2px solid white",boxShadow:"0px 2px 4px 0px rgba(0,0,0,0.30)",backgroundImage:"url('images/user.png')",backgroundSize:"cover",borderRadius:25,display:"inline-block",marginLeft:-10}}> </div>
+                      */
+                    
+
+module.exports = CompanyCard
+
+});
+
+;require.register("company_detail_overlay", function(exports, require, module) {
+var CompanyDetailOverlay = React.createClass({displayName: 'CompanyDetailOverlay',
+  toggleCompanyDetailOverlay: function() {
+    console.log("toggle")
+    this.props.toggleCompanyDetailOverlay()
+  },
+
+  componentWillReceiveProps: function(a, b) {
+    console.log(a)
+    console.log(b)
+  },
+
+  render: function() {
+    console.log(this.props)
+    company = (this.props.company.trigger) ? this.props.company.trigger : {}
+    employees = (this.props.company.employees) ? this.props.company.employees : []
+    employees = _.map(employees, function(emp) {
+        return React.createElement("div", {style: {paddingLeft:5}}, 
+          React.createElement(UserPic, null), 
+          React.createElement("h5", {style: {marginBottom:0}}, React.createElement("span", {style: {fontWeight:"bold"}}, emp.name), " - ", React.createElement("small", null, emp.title)), 
+          React.createElement("h6", {style: {marginTop:4}}, emp.locale), 
+          React.createElement("a", {href: "javascript:", className: "btn btn-success btn-xs", 
+              style: {float:"right",marginTop:-35,marginRight:30}}, 
+            React.createElement("i", {className: "fa fa-plus"})
+          )
+        )
+    })
+    return (
+      React.createElement("div", null, 
+        React.createElement("div", {style: {height:"100%",width:"100%",position:"absolute",top:0,left:0,backgroundColor:"rgba(255,255,255,0.7)",zIndex:1}, 
+            onClick: this.toggleCompanyDetailOverlay}, 
+        React.createElement("a", {href: "javascript:", className: "btn btn-lg"}, 
+          React.createElement("i", {className: "fa fa-times"})
+        )
+      ), 
+      React.createElement("div", {style: {width:"60%",float:"right",borderLeft:"1px solid #ccc",zIndex:2,position:"absolute",top:0,right:0,height:"100%",backgroundColor:"white"}}, 
+        React.createElement("h1", null, company.company_name), 
+        React.createElement("hr", null), 
+        React.createElement("div", {style: {height:"83%",overflow:"auto"}}, 
+          employees
+        )
+      )
+    )
+    )
+  }
+})
+
+var UserPic = React.createClass({displayName: 'UserPic',
+  render: function() {
+    return (
+      React.createElement("div", {style: {height:35,width:35,border:"2px solid white",oldBoxShadow:"0px 2px 4px 0px rgba(0,0,0,0.30)",backgroundImage:"url('images/user.png')",backgroundSize:"cover",borderRadius:25,float:"left",marginRight:10}}, " ")
+    )
+
+  }
+})
+
+
+module.exports = CompanyDetailOverlay
+
+});
+
 ;require.register("create_trigger_modal", function(exports, require, module) {
 var TabbedArea = ReactBootstrap.TabbedArea
 var TabPane = ReactBootstrap.TabPane
@@ -271,7 +436,80 @@ document.addEventListener('DOMContentLoaded', function() {
 
 });
 
-require.register("range_slider", function(exports, require, module) {
+require.register("profile_sidebar", function(exports, require, module) {
+var ProfileSidebar = React.createClass({displayName: 'ProfileSidebar',
+
+  toggleCreateTriggerModal: function() {
+    console.log(this.props)
+    this.props.toggleCreateTriggerModal()
+  },
+
+  render: function() {
+    //console.log(this.props)
+    return (
+          React.createElement("div", {className: "col-md-2"}, 
+            React.createElement("span", {style: {fontWeight:"800"}}, "TRIGGERS",  
+              React.createElement("span", {style: {color:"#bbb",marginLeft:10,fontWeight:200}}, "(18) ")
+            ), 
+
+            React.createElement("a", {href: "javascript:", 
+               className: "btn btn-success btn-xs", 
+               onClick: this.toggleCreateTriggerModal, 
+               style: {float:"right"}}, 
+              React.createElement("i", {className: "fa fa-plus"}))
+          )
+      
+    )
+  }
+})
+
+var HiringProfileCard = React.createClass({displayName: 'HiringProfileCard',
+  render: function() {
+    return (
+      React.createElement("div", {style: {cursor:"pointer"}}, 
+        React.createElement("h5", null, " ", React.createElement("i", {className: "fa fa-suitcase"}), " " + ' ' +
+          "Hiring Trigger Name"), 
+        React.createElement("h5", null, React.createElement("small", null, "Company Info blah blah")), 
+        React.createElement("hr", null)
+      )
+    )
+  }
+})
+
+var PressProfileCard = React.createClass({displayName: 'PressProfileCard',
+  render: function() {
+    return (
+      React.createElement("div", {style: {cursor:"pointer"}}, 
+        React.createElement("h5", null, " ", React.createElement("i", {className: "fa fa-bullhorn"}), " " + ' ' +
+          "Press Trigger Name"), 
+        React.createElement("h5", null, React.createElement("small", null, "Company Info blah blah")), 
+      React.createElement("hr", null)
+      )
+    )
+  }
+})
+
+var TwitterProfileCard = React.createClass({displayName: 'TwitterProfileCard',
+  render: function() {
+    return (
+      React.createElement("div", {style: {cursor:"pointer"}}, 
+        React.createElement("div", null, 
+          React.createElement("h5", null, React.createElement("i", {className: "fa fa-twitter"}), "  " + ' ' +
+            "Twitter Trigger Name"), 
+          React.createElement("h5", null, React.createElement("small", null, 
+              React.createElement("span", {style: {fontWeight:"bold"}}, "Keywords: "), 
+                "blah blah"))
+        )
+      )
+    )
+  }
+})
+
+module.exports = ProfileSidebar
+
+});
+
+;require.register("range_slider", function(exports, require, module) {
 //var Slider = require("bootstrap-slider");
 
 var RangeSlider = React.createClass({displayName: 'RangeSlider',
@@ -306,7 +544,11 @@ module.exports = RangeSlider
 
 ;require.register("routes", function(exports, require, module) {
 var DataExplorer = require("table")
+var CompanyCard = require("company_card")
+var CompanyDetailOverlay = require("company_detail_overlay")
 var UserDatasetTable = require("user_dataset_table")
+var ProfileSidebar = require("profile_sidebar")
+var TriggerList = require("trigger_list")
 var CreateTriggerModal = require("create_trigger_modal")
 
 var TabbedArea = ReactBootstrap.TabbedArea
@@ -534,7 +776,12 @@ var DatasetVisualizations = React.createClass({displayName: 'DatasetVisualizatio
 var Main = React.createClass({displayName: 'Main',
   getInitialState: function() {
     return {
-      showCreateTriggerModal: false
+      showCreateTriggerModal: false,
+      profiles:[],
+      triggers:[],
+      triggerEmployees: {},
+      detailMode: true,
+      currentCompany: {}
     }
   },
 
@@ -543,48 +790,81 @@ var Main = React.createClass({displayName: 'Main',
     this.setState({ showCreateTriggerModal: !this.state.showCreateTriggerModal });
   },
 
+  toggleCompanyDetailOverlay: function(company) {
+    this.setState({currentCompany: company })
+    this.setState({detailMode: !this.state.detailMode})
+  },
+
+  componentWillMount: function() {
+    var _this = this;
+    $.ajax({
+      url: "http://localhost:5000/profiles",
+      dataType:"json",
+      success: function(res) {
+        console.log(res)
+        _this.setState({profiles: res})
+      },
+      error: function(err) {
+        console.log(err)
+      }
+    })
+
+    $.ajax({
+      url: "http://localhost:5000/triggers",
+      dataType:"json",
+      success: function(res) {
+        console.log(res)
+        _this.setState({triggers: res})
+
+        _.map(_this.state.triggers, function(trig) {
+          $.ajax({
+            url:"http://localhost:5000/company/"+trig.company_key+"/employees",
+            triggerId: trig.company_key,
+            dataType:"json",
+            success: function(res) {
+              triggerId = this.triggerId+"_employees"
+              //console.log(triggerId)
+              //console.log(res)
+              //_this.setState({triggerId: res})
+              localStorage[triggerId] = JSON.stringify(res)
+            },
+            error: function(err) {
+              console.log(err)
+            }
+          })
+        })
+      },
+      error: function(err) {
+        console.log(err)
+      }
+    })
+  },
+
+  componentDidMount: function() {
+  },
+
   render: function() {
+    var _this = this;
+    console.log(this.state)
+    CompanyCards = _.map(this.state.triggers, function(trig) {
+      employeeId = trig.company_key+"_employees"
+      console.log(localStorage.employeeId)
+      if(localStorage[employeeId])
+        emps = (localStorage[employeeId] != "") ? JSON.parse(localStorage[employeeId]) : []
+      else
+        emps = []
+
+        return React.createElement(CompanyCard, {trigger: trig, 
+                      toggleCompanyDetailOverlay: _this.toggleCompanyDetailOverlay, 
+                          employees: emps})
+    })
     return (
-      React.createElement("div", {className: "container"}, 
-        React.createElement("br", null), 
+      React.createElement("div", {className: "container"}, " ", React.createElement("br", null), 
         React.createElement("div", {className: "row"}, 
-          React.createElement("div", {className: "col-md-2"}, 
-            React.createElement("span", {style: {fontWeight:"800"}}, "TRIGGERS",  
-              React.createElement("span", {style: {color:"#bbb",marginLeft:10,fontWeight:200}}, "(18) ")
-            ), 
-
-            React.createElement("a", {href: "javascript:", 
-               className: "btn btn-success btn-xs", 
-               onClick: this.toggleCreateTriggerModal, 
-               style: {float:"right"}}, 
-              React.createElement("i", {className: "fa fa-plus"})), 
-
-            React.createElement("hr", null), 
-            React.createElement("div", {style: {cursor:"pointer"}}, 
-              React.createElement("div", null, 
-                React.createElement("h5", null, React.createElement("i", {className: "fa fa-twitter"}), "  " + ' ' +
-                  "Twitter Trigger Name"), 
-                
-                React.createElement("h5", null, React.createElement("small", null, 
-                    React.createElement("span", {style: {fontWeight:"bold"}}, "Keywords: "), 
-                      "blah blah"))
-              )
-            ), 
-            React.createElement("hr", null), 
-            React.createElement("div", {style: {cursor:"pointer"}}, 
-              React.createElement("h5", null, " ", React.createElement("i", {className: "fa fa-suitcase"}), " " + ' ' +
-                "Hiring Trigger Name"), 
-              React.createElement("h5", null, React.createElement("small", null, "Company Info blah blah"))
-            ), 
-            React.createElement("hr", null), 
-            React.createElement("div", {style: {cursor:"pointer"}}, 
-              React.createElement("h5", null, " ", React.createElement("i", {className: "fa fa-bullhorn"}), " " + ' ' +
-                "Press Trigger Name"), 
-              React.createElement("h5", null, React.createElement("small", null, "Company Info blah blah"))
-            ), 
-            React.createElement("hr", null)
-
-          ), 
+          React.createElement(ProfileSidebar, {
+              profiles: this.state.profiles, 
+              lol: "yoyo", 
+              toggleCreateTrigerModal: this.toggleCreateTriggerModal}), 
           React.createElement("div", {className: "col-md-10", style: {paddingLeft:30}}, 
             React.createElement("div", {style: {display:"block",marginLeft:"auto",marginRight:100,textAlign:"center",marginTop:8}}, 
               React.createElement("span", {style: {fontWeight:"800"}}, "TODAY "), 
@@ -593,67 +873,24 @@ var Main = React.createClass({displayName: 'Main',
             React.createElement("a", {href: "javascript:", className: "btn btn-success", style: {float:"right",marginTop:-90,display:"none"}}, "Create Trigger"), 
             React.createElement("a", {href: "javascript:", className: "btn btn-default btn-xs", style: {float:"right",marginTop:-25}}, "List View"), 
             React.createElement("br", null), 
-            React.createElement(CompanyCard, null), 
-            React.createElement(CompanyCard, null), 
-            React.createElement(CompanyCard, null)
+            CompanyCards
           )
         ), 
         React.createElement(CreateTriggerModal, {
             showModal: this.state.showCreateTriggerModal, 
-            closeModal: this.toggleCreateTriggerModal})
+            closeModal: this.toggleCreateTriggerModal}), 
+        (this.state.detailMode) ?
+          React.createElement(CompanyDetailOverlay, {
+              toggleCompanyDetailOverlay: this.toggleCompanyDetailOverlay, 
+              company: this.state.currentCompany}) : ""
+        
       )
     )
   }
 })
 
 
-var CompanyDetailOverlay = React.createClass({displayName: 'CompanyDetailOverlay',
-  render: function() {
-    return (
-      React.createElement("div", null
-      )
-    )
-  }
-})
 
-var CompanyCard = React.createClass({displayName: 'CompanyCard',
-  render: function() {
-    return (
-          React.createElement("div", {className: ""}, 
-              React.createElement("table", null, 
-                React.createElement("tbody", null, 
-                  React.createElement("tr", null, 
-                    React.createElement("td", null, 
-                     React.createElement("a", {href: "#", className: "thumbnail", 
-                        style: {height:60,width:60,marginRight:15,float:"left",marginBottom:0}}, 
-                        React.createElement("img", {src: "images/radar_1.png", alt: "..."})
-                      )
-                    ), 
-                    React.createElement("td", {style: {padding:5,width:"35%"}}, 
-                      React.createElement("h5", null, "Company Card"), 
-                      React.createElement("h5", null, React.createElement("small", null, "Company Info blah blah"))
-                    ), 
-                    React.createElement("td", {style: {padding:5,width:"35%"}}, 
-                      React.createElement("h5", null), 
-                      React.createElement("h5", null, React.createElement("small", null, "Tweeted out this workd blah blah"))
-                    ), 
-                    React.createElement("td", {style: {padding:5,width:"35%"}}, 
-                      React.createElement("h5", null), 
-                      React.createElement("div", {style: {height:25,width:25,border:"2px solid white",boxShadow:"0px 2px 4px 0px rgba(0,0,0,0.30)",backgroundImage:"url('images/user.png')",backgroundSize:"cover",borderRadius:25,display:"inline-block"}}, " "), 
-                      React.createElement("div", {style: {height:25,width:25,border:"2px solid white",boxShadow:"0px 2px 4px 0px rgba(0,0,0,0.30)",backgroundImage:"url('images/user.png')",backgroundSize:"cover",borderRadius:25,display:"inline-block"}}, " "), 
-                      React.createElement("div", {style: {height:25,width:25,border:"2px solid white",boxShadow:"0px 2px 4px 0px rgba(0,0,0,0.30)",backgroundImage:"url('images/user.png')",backgroundSize:"cover",borderRadius:25,display:"inline-block"}}, " ")
-
-                    ), 
-                    React.createElement("td", {style: {padding:5}}, 
-                      React.createElement("a", {href: "javascript:", className: "btn btn-primary btn-sm"}, React.createElement("i", {className: "fa fa-download"}))
-                    )
-                  )
-                )
-              )
-            )
-    )
-  }
-})
 
 // declare our routes and their hierarchy
 var routes = (
@@ -781,6 +1018,34 @@ var DataExplorer = React.createClass({displayName: 'DataExplorer',
 })
 
 module.exports = DataExplorer
+
+});
+
+;require.register("trigger_list", function(exports, require, module) {
+var CompanyCard = require("company_card")
+
+var TriggerList = React.createClass({displayName: 'TriggerList',
+  render: function() {
+    return (
+
+          React.createElement("div", {className: "col-md-10", style: {paddingLeft:30}}, 
+            React.createElement("div", {style: {display:"block",marginLeft:"auto",marginRight:100,textAlign:"center",marginTop:8}}, 
+              React.createElement("span", {style: {fontWeight:"800"}}, "TODAY "), 
+              React.createElement("span", {style: {color:"#bbb"}}, "August 28th")
+            ), 
+            React.createElement("a", {href: "javascript:", className: "btn btn-success", style: {float:"right",marginTop:-90,display:"none"}}, "Create Trigger"), 
+            React.createElement("a", {href: "javascript:", className: "btn btn-default btn-xs", style: {float:"right",marginTop:-25}}, "List View"), 
+            React.createElement("br", null), 
+            React.createElement(CompanyCard, null), 
+            React.createElement(CompanyCard, null), 
+            React.createElement(CompanyCard, null)
+          )
+
+    )
+  }
+})
+
+module.exports = TriggerList
 
 });
 

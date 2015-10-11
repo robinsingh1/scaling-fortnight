@@ -1,5 +1,9 @@
 var DataExplorer = require("table")
+var CompanyCard = require("company_card")
+var CompanyDetailOverlay = require("company_detail_overlay")
 var UserDatasetTable = require("user_dataset_table")
+var ProfileSidebar = require("profile_sidebar")
+var TriggerList = require("trigger_list")
 var CreateTriggerModal = require("create_trigger_modal")
 
 var TabbedArea = ReactBootstrap.TabbedArea
@@ -227,7 +231,12 @@ var DatasetVisualizations = React.createClass({
 var Main = React.createClass({
   getInitialState: function() {
     return {
-      showCreateTriggerModal: false
+      showCreateTriggerModal: false,
+      profiles:[],
+      triggers:[],
+      triggerEmployees: {},
+      detailMode: true,
+      currentCompany: {}
     }
   },
 
@@ -236,48 +245,81 @@ var Main = React.createClass({
     this.setState({ showCreateTriggerModal: !this.state.showCreateTriggerModal });
   },
 
+  toggleCompanyDetailOverlay: function(company) {
+    this.setState({currentCompany: company })
+    this.setState({detailMode: !this.state.detailMode})
+  },
+
+  componentWillMount: function() {
+    var _this = this;
+    $.ajax({
+      url: "http://localhost:5000/profiles",
+      dataType:"json",
+      success: function(res) {
+        console.log(res)
+        _this.setState({profiles: res})
+      },
+      error: function(err) {
+        console.log(err)
+      }
+    })
+
+    $.ajax({
+      url: "http://localhost:5000/triggers",
+      dataType:"json",
+      success: function(res) {
+        console.log(res)
+        _this.setState({triggers: res})
+
+        _.map(_this.state.triggers, function(trig) {
+          $.ajax({
+            url:"http://localhost:5000/company/"+trig.company_key+"/employees",
+            triggerId: trig.company_key,
+            dataType:"json",
+            success: function(res) {
+              triggerId = this.triggerId+"_employees"
+              //console.log(triggerId)
+              //console.log(res)
+              //_this.setState({triggerId: res})
+              localStorage[triggerId] = JSON.stringify(res)
+            },
+            error: function(err) {
+              console.log(err)
+            }
+          })
+        })
+      },
+      error: function(err) {
+        console.log(err)
+      }
+    })
+  },
+
+  componentDidMount: function() {
+  },
+
   render: function() {
+    var _this = this;
+    console.log(this.state)
+    CompanyCards = _.map(this.state.triggers, function(trig) {
+      employeeId = trig.company_key+"_employees"
+      console.log(localStorage.employeeId)
+      if(localStorage[employeeId])
+        emps = (localStorage[employeeId] != "") ? JSON.parse(localStorage[employeeId]) : []
+      else
+        emps = []
+
+        return <CompanyCard trigger={trig} 
+                      toggleCompanyDetailOverlay={_this.toggleCompanyDetailOverlay}
+                          employees={emps}/>
+    })
     return (
-      <div className="container">
-        <br/>
+      <div className="container"> <br/>
         <div className = "row">
-          <div className="col-md-2">
-            <span style={{fontWeight:"800"}}>TRIGGERS 
-              <span style={{color:"#bbb",marginLeft:10,fontWeight:200}}>(18) </span>
-            </span>
-
-            <a href="javascript:" 
-               className="btn btn-success btn-xs" 
-               onClick={this.toggleCreateTriggerModal}
-               style={{float:"right"}}>
-              <i className="fa fa-plus"/></a>
-
-            <hr/>
-            <div style={{cursor:"pointer"}}>
-              <div>
-                <h5><i className="fa fa-twitter" /> &nbsp;
-                  Twitter Trigger Name</h5>
-                
-                <h5><small>
-                    <span style={{fontWeight:"bold"}}>Keywords: </span>
-                      blah blah</small></h5>
-              </div>
-            </div>
-            <hr/>
-            <div style={{cursor:"pointer"}}>
-              <h5> <i className="fa fa-suitcase" />&nbsp;
-                Hiring Trigger Name</h5>
-              <h5><small>Company Info blah blah</small></h5>
-            </div>
-            <hr/>
-            <div style={{cursor:"pointer"}}>
-              <h5> <i className="fa fa-bullhorn" />&nbsp;
-                Press Trigger Name</h5>
-              <h5><small>Company Info blah blah</small></h5>
-            </div>
-            <hr/>
-
-          </div>
+          <ProfileSidebar 
+              profiles={this.state.profiles}
+              lol={"yoyo"}
+              toggleCreateTrigerModal={this.toggleCreateTriggerModal}/>
           <div className="col-md-10" style={{paddingLeft:30}}>
             <div style={{display:"block",marginLeft:"auto",marginRight:100,textAlign:"center",marginTop:8}}>
               <span style={{fontWeight:"800"}}>TODAY </span>
@@ -286,67 +328,24 @@ var Main = React.createClass({
             <a href="javascript:" className="btn btn-success" style={{float:"right",marginTop:-90,display:"none"}}>Create Trigger</a>
             <a href="javascript:" className="btn btn-default btn-xs" style={{float:"right",marginTop:-25}}>List View</a>
             <br/>
-            <CompanyCard />
-            <CompanyCard />
-            <CompanyCard />
+            {CompanyCards}
           </div>
         </div>
         <CreateTriggerModal 
             showModal={this.state.showCreateTriggerModal}
             closeModal={this.toggleCreateTriggerModal}/>
+        {(this.state.detailMode) ?
+          <CompanyDetailOverlay 
+              toggleCompanyDetailOverlay={this.toggleCompanyDetailOverlay}
+              company={this.state.currentCompany}/> : ""
+        }
       </div>
     )
   }
 })
 
 
-var CompanyDetailOverlay = React.createClass({
-  render: function() {
-    return (
-      <div>
-      </div>
-    )
-  }
-})
 
-var CompanyCard = React.createClass({
-  render: function() {
-    return (
-          <div className="">
-              <table>
-                <tbody>
-                  <tr>
-                    <td>
-                     <a href="#" className="thumbnail" 
-                        style={{height:60,width:60,marginRight:15,float:"left",marginBottom:0}}>
-                        <img src="images/radar_1.png" alt="..."/>
-                      </a>
-                    </td>
-                    <td style={{padding:5,width:"35%"}}>
-                      <h5>Company Card</h5>
-                      <h5><small>Company Info blah blah</small></h5>
-                    </td>
-                    <td style={{padding:5,width:"35%"}}>
-                      <h5></h5>
-                      <h5><small>Tweeted out this workd blah blah</small></h5>
-                    </td>
-                    <td style={{padding:5,width:"35%"}}>
-                      <h5></h5>
-                      <div style={{height:25,width:25,border:"2px solid white",boxShadow:"0px 2px 4px 0px rgba(0,0,0,0.30)",backgroundImage:"url('images/user.png')",backgroundSize:"cover",borderRadius:25,display:"inline-block"}}> </div>
-                      <div style={{height:25,width:25,border:"2px solid white",boxShadow:"0px 2px 4px 0px rgba(0,0,0,0.30)",backgroundImage:"url('images/user.png')",backgroundSize:"cover",borderRadius:25,display:"inline-block"}}> </div>
-                      <div style={{height:25,width:25,border:"2px solid white",boxShadow:"0px 2px 4px 0px rgba(0,0,0,0.30)",backgroundImage:"url('images/user.png')",backgroundSize:"cover",borderRadius:25,display:"inline-block"}}> </div>
-
-                    </td>
-                    <td style={{padding:5}}>
-                      <a href="javascript:" className="btn btn-primary btn-sm"><i className="fa fa-download"/></a>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-    )
-  }
-})
 
 // declare our routes and their hierarchy
 var routes = (

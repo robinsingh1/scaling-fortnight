@@ -89,7 +89,7 @@ class Indeed:
         #companies = self._indeed_page(role, locale, page, country)
         indeed_results = self._search(role, page, locale, country)
         companies = self._search_results_html_to_df(indeed_results)
-        print companies
+        #print companies
         companies = companies[companies.date.str.contains("hour|minute|Just")]
         companies = self._date_phrase_to_timestamp(companies)
         companies = companies.drop_duplicates('company_name')

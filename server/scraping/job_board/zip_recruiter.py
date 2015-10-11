@@ -51,19 +51,18 @@ class ZipRecruiter:
         last_page = html.find('ul',{'class':'paginationNumbers'})
         last_page = last_page.find_all('li') if last_page else None
         last_page = int(last_page[-1].text.strip()) if last_page else 1
+        conn = r.connect(host="localhost", port=28015, db="triggeriq")
         for page in range(last_page):
             html = self._html(qry, page, locale, country)
-            listings = listings.append(self._listings(html))
-        listings['source'] = 'Zip Recruiter'
-        listings["keyword"] = qry
-        listings["profile"] = profile
-        print listings
-        companies = listings
-        keys = [row.company_name.lower().replace(" ","")+"_"+profile for i, row in companies.iterrows()]
-        companies["company_key"] = keys
-
-        conn = r.connect(host="localhost", port=28015, db="triggeriq")
-        #r.table("hiring_signals").insert(companies.to_dict('r')).run(conn)
-        r.table("triggers").insert(companies.to_dict('r')).run(conn)
+            #listings = listings.append(self._listings(html))
+            listings = self._listings(html)
+            listings['source'] = 'Zip Recruiter'
+            listings["keyword"] = qry
+            listings["profile"] = profile
+            companies = listings
+            keys = [row.company_name.lower().replace(" ","")+"_"+profile for i, row in companies.iterrows()]
+            companies["company_key"] = keys
+            #r.table("hiring_signals").insert(companies.to_dict('r')).run(conn)
+            r.table("triggers").insert(companies.to_dict('r')).run(conn)
         #HiringSignal()._persist(listings, profile, report)
 

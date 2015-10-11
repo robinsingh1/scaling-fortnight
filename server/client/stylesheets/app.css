@@ -14260,6 +14260,11 @@ html {
 *:after {
   box-sizing: inherit;
 }
+.ellipsis {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
 .action-btn {
   display: block;
   float: left;
