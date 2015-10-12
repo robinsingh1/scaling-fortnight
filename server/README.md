@@ -1,6 +1,6 @@
 # Creating Supervisor Conf
 
-sudo honcho export -f Procfile.dev -c all=1,worker=10 -a triggeriq supervisord /etc/supervisor/conf.d -u robin
+sudo honcho export -f Procfile -c all=1,worker=10 -a triggeriq supervisord /etc/supervisor/conf.d -u robin
 
 # Then Add These Lines To The Top Of The Other File
 

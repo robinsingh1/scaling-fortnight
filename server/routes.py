@@ -34,7 +34,7 @@ app = Flask(__name__, static_url_path="", static_folder="client")
 
 @app.route("/test_1")
 def test_1():
-    return "test_3"
+    return "test_4"
 
 @app.route("/company_research")
 def company_research():

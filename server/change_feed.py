@@ -28,8 +28,8 @@ high_q = Queue("high", connection=_conn)
 
 @gen.coroutine
 def print_changes():
-    rethink_conn = yield r.connect(host="localhost", port=28015)
-    feed = yield r.db('change_example').table('mytable').changes().run(rethink_conn)
+    rethink_conn = yield r.connect(host="localhost", port=28015, db="triggeriq")
+    feed = yield r.table('mytable').changes().run(rethink_conn)
     while (yield feed.fetch_next()):
         change = yield feed.next()
         print "lol"
