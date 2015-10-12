@@ -20,4 +20,6 @@ port=127.0.0.1:9001   ;
 [supervisorctl]
 serverurl=http://127.0.0.1:9001 ;
 
-#
+# Start Processes
+
+supervisord -c /etc/supervisor/conf.d/triggeriq.conf
