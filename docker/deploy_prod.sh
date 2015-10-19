@@ -1,7 +1,7 @@
 #!/bin/bash
-rsync -az --delete ./ root@159.203.91.107:/root/triggeriq-dockerfiles
-ssh root@159.203.91.107 "cd /root/triggeriq-dockerfiles && \
-docker pull picobit/triggeriq-base:latest && \
+rsync -az --delete ./ root@45.55.52.78:/root/clearspark-dockerfiles
+ssh root@45.55.52.78 "cd /root/clearspark-dockerfiles && \
+docker pull picobit/clearspark-base:latest && \
 docker-compose build && \
 docker-compose up -d && \
 docker-compose scale worker=4"
