@@ -26,6 +26,11 @@ conn = r.connect(host="localhost", port=28015, db="clearspark")
 app = Flask(__name__, static_url_path="", static_folder="client")
 app.debug = True
 
+@app.route("/app")
+#TODO requires authentication
+def app_hello():
+  return send_from_directory("client", "index.html")
+
 @app.route("/feed/<user_id>")
 def user_feed(user_id):
     # TODO paginate
