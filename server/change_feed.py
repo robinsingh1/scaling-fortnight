@@ -1,166 +1,47 @@
 import tornado.ioloop
 import logging
+import json
 import tornado.web
 import rethinkdb as r
 from tornado import ioloop, gen
 from schedule import * 
 from routes import app
-from scraping.company_api.company_name_to_domain import CompanyNameToDomain
-from scraping.email_pattern.email_hunter import EmailHunter
-from scraping.email_pattern.clearbit_search import ClearbitSearch
-from scraping.employee_search.employee_search import GoogleEmployeeSearch
 from tornadotools.route import Route
-
-import rethinkdb as r
-import json
+from websocket import *
+import redis
 
 ''' RethinkDB Changefeeds Callbacks '''
 r.set_loop_type("tornado")
 
 from rq import Queue
 from worker import conn as _conn
-
 q = Queue("low", connection=_conn)
 default_q = Queue("default", connection=_conn)
 high_q = Queue("high", connection=_conn)
 
-#change_feed: python -u change_feed.py
-
 @gen.coroutine
-def print_changes():
-    rethink_conn = yield r.connect(host="localhost", port=28015, db="triggeriq")
-    feed = yield r.table('mytable').changes().run(rethink_conn)
+def company_event_changes():
+    rethink_conn = yield r.connect(db="clearspark")
+    feed = yield r.table('company_events').changes().run(rethink_conn)
     while (yield feed.fetch_next()):
         change = yield feed.next()
-        print "lol"
-        print change
+        # get domain of company 
 
-@gen.coroutine
-def email_pattern():
-    rethink_conn = yield r.connect(host="localhost", port=28015, db="triggeriq")
-    feed = yield r.table('email_pattern_crawls').changes().run(rethink_conn)
-    while (yield feed.fetch_next()):
-        change = yield feed.next()
-        print "EMAIL PATTERN CHANGE FEED"
-        print "lol"
-        print change
-        # score email_pattern_crawl
-
-@gen.coroutine
-def old_hiring_signals():
-    rethink_conn = yield r.connect(host="localhost", port=28015, db="triggeriq")
-    #feed = yield r.table('hiring_signals').changes().run(rethink_conn)
-    feed = yield r.table('triggers').changes().run(rethink_conn)
-    while (yield feed.fetch_next()):
-        change = yield feed.next()
-        if change["old_val"] == None:
-            val = change["new_val"]
-            q.enqueue(CompanyNameToDomain()._update_record, 
-                      val["company_name"], val["company_key"])
-            q.enqueue(GoogleEmployeeSearch()._update_record, 
-                      val["company_name"], "", val["company_key"])
-
-        if "domain" in change["new_val"]:
-            #if change["old_val"] == None or "domain" not in change["old_val"]:
-            print "SECOND TIME ROUND"
-            val = change["new_val"]
-            default_q.enqueue(ClearbitSearch()._update_company_record, 
-                      val["domain"], val["company_key"])
-            high_q.enqueue(EmailHunter()._update_record, 
-                      val["domain"], val["company_key"])
-
-        if "email_pattern" in change["new_val"]: 
-            #if change["old_val"] == None or "email_pattern" not in change["old_val"]:
-            print "EMAIL_PATTERN"
-            pattern = change["new_val"]["email_pattern"]
-            high_q.enqueue(ClearbitSearch()._bulk_update_employee_record, 
-                      change["new_val"]["company_key"],
-                      change["new_val"]["email_pattern"]["pattern"],
-                      change["new_val"]["domain"])
-
-@gen.coroutine
-def hiring_signals():
-    rethink_conn = yield r.connect(host="localhost", port=28015, db="triggeriq")
-    #feed = yield r.table('hiring_signals').changes().run(rethink_conn)
-    feed = yield r.table('triggers').changes().run(rethink_conn)
-    while (yield feed.fetch_next()):
-        change = yield feed.next()
-        if change["old_val"] == None:
-            val = change["new_val"]
-            q.enqueue(CompanyNameToDomain()._update_record, 
-                      val["company_name"], val["company_key"])
-            q.enqueue(GoogleEmployeeSearch()._update_record, 
-                      val["company_name"], "", val["company_key"])
-
-        if "domain" in change["new_val"]:
-            #if change["old_val"] == None or "domain" not in change["old_val"]:
-            print "SECOND TIME ROUND"
-            val = change["new_val"]
-            q.enqueue(ClearbitSearch()._update_company_record, 
-                      val["domain"], val["company_key"])
-            q.enqueue(EmailHunter()._update_record, 
-                      val["domain"], val["company_key"])
-
-        if "email_pattern" in change["new_val"]: 
-            #if change["old_val"] == None or "email_pattern" not in change["old_val"]:
-            print "EMAIL_PATTERN"
-            pattern = change["new_val"]["email_pattern"]
-            q.enqueue(ClearbitSearch()._bulk_update_employee_record, 
-                      change["new_val"]["company_key"],
-                      change["new_val"]["email_pattern"]["pattern"],
-                      change["new_val"]["domain"])
-
-''' Application Routes '''
-@Route(r"/trigger_research")
-class SimpleHandler(tornado.web.RequestHandler):
-    def get(self):
-        #self.write("Hello, world")
-        conn = yield r.connect(host="localhost", port=28015, db="triggeriq")
-        feed = yield r.table('triggers').changes().run(conn)
-        while (yield feed.fetch_next()):
-            val = yield feed.next()
-            q.enqueue(CompanyNameToDomain()._update_record, 
-                      val["company_name"], val["company_key"])
-            q.enqueue(GoogleEmployeeSearch()._update_record, 
-                      val["company_name"], "", val["company_key"])
-
-        self.write( {"print":"research"} )
-
-@Route(r"/test_with_name", name="test")
-class SimpleHandler2(tornado.web.RequestHandler):
-    def get(self):
-        #self.write("Hello, world")
-        self.write( {"lol":"lmao"} )
-
-@Route(r"/test_with_init", initialize={'init': 'dictionary'})
-class SimpleHandler3(tornado.web.RequestHandler):
-    pass
-
-@Route(r"/profiles")
-class SimpleHandler4(tornado.web.RequestHandler):
-    def get(self):
-        # TODO - get all routes which belong to certain user
-        self.write( {"lol":"lmao"} )
-
-@Route(r"/triggers")
-class SimpleHandler5(tornado.web.RequestHandler):
-    def get(self):
-        # get all routes which belong to user or profile
-        # TODO - include employees
-        self.write( {"lol":"lmao"} )
-
-@Route(r"/signals")
-class SimpleHandler6(tornado.web.RequestHandler):
-    def get(self):
-        # TODO - get all routes which belong to
-        self.write( {"lol":"lmao"} )
-
-app = tornado.web.Application(Route.routes())
+        qry = {"domain":change["new_val"]["domain"]}
+        users = r.table("user_contacts").filter(qry).run(conn)
+        max_number_of_elements = 100
+        val = change["new_val"]
+        for user in users:
+            key = "user:#{id}".format(user)
+            #redis.zadd(key, score, new_content.id)
+            redis.zadd(key, val["timestamp"], val["id"])
+            redis.zremrangebyrank(key, max_number_of_elements, -1)
+        
+app = tornado.web.Application(Route.routes() + [
+ (r'/send_message', SendMessageHandler)
+] + sockjs.tornado.SockJSRouter(MessageHandler, '/sockjs').urls)
 
 if __name__ == "__main__":
     app.listen(8988)
-    #app.listen(8000)
-    #app.listen(5000)
-    tornado.ioloop.IOLoop.current().add_callback(print_changes)
-    tornado.ioloop.IOLoop.current().add_callback(hiring_signals)
+    tornado.ioloop.IOLoop.current().add_callback(company_event_changes)
     tornado.ioloop.IOLoop.current().start()

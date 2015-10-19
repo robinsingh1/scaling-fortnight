@@ -91,3 +91,64 @@
 2015-08-31T13:54:28.794744000 2273.460080s notice: All client connections closed.
 2015-08-31T13:54:28.794761000 2273.460097s notice: Shutting down storage engine... (This may take a while if you had a lot of unflushed data in the writeback cache.)
 2015-08-31T13:54:28.823269000 2273.488606s notice: Storage engine shut down.
+2015-10-12T09:27:05.646778000 0.719048s notice: Running rethinkdb 2.0.2 (CLANG 6.0 (clang-600.0.57))...
+2015-10-12T09:27:05.660129000 0.732395s notice: Running on Darwin 14.3.0 x86_64
+2015-10-12T09:27:05.660184000 0.732449s notice: Loading data from directory /Users/robin/Projects/triggeriq/server/rethinkdb_data
+2015-10-12T09:27:05.759276000 0.831540s info: Automatically using cache size of 100 MB
+2015-10-12T09:27:05.759291000 0.831556s warn: Cache size does not leave much memory for server and query overhead (available memory: 817 MB).
+2015-10-12T09:27:05.759297000 0.831561s warn: Cache size is very low and may impact performance.
+2015-10-12T09:27:05.760069000 0.832333s error: TCP socket creation failed for port 29015: Address already in use.
+2015-10-12T11:59:44.252048000 0.005161s notice: Running rethinkdb 2.0.2 (CLANG 6.0 (clang-600.0.57))...
+2015-10-12T11:59:44.257576000 0.010687s notice: Running on Darwin 14.3.0 x86_64
+2015-10-12T11:59:44.257619000 0.010727s notice: Loading data from directory /Users/robin/Projects/triggeriq/server/rethinkdb_data
+2015-10-12T11:59:44.306944000 0.060053s info: Automatically using cache size of 100 MB
+2015-10-12T11:59:44.306952000 0.060061s warn: Cache size does not leave much memory for server and query overhead (available memory: 809 MB).
+2015-10-12T11:59:44.306956000 0.060065s warn: Cache size is very low and may impact performance.
+2015-10-12T11:59:44.307646000 0.060755s notice: Listening for intracluster connections on port 29015
+2015-10-12T11:59:44.309233000 0.062342s notice: Listening for client driver connections on port 28015
+2015-10-12T11:59:44.309364000 0.062473s notice: Listening for administrative HTTP connections on port 8080
+2015-10-12T11:59:44.309366000 0.062474s notice: Listening on addresses: 127.0.0.1, ::1
+2015-10-12T11:59:44.309369000 0.062477s notice: To fully expose RethinkDB on the network, bind to all addresses by running rethinkdb with the `--bind all` command line option.
+2015-10-12T11:59:44.309371000 0.062480s notice: Server ready, "Rajvinders_MacBook_Pro_local_dqy" 606dcb67-4879-4032-baa7-c7e41d6ac70b
+2015-10-12T11:59:44.433831000 0.186940s notice: A newer version of the RethinkDB server is available: 2.1.5-2. You can read the changelog at <https://github.com/rethinkdb/rethinkdb/releases>.
+2015-10-12T12:00:15.753829000 31.505810s notice: Server got SIGINT from pid 585, uid 501; shutting down...
+2015-10-12T12:00:15.754003000 31.505983s notice: Shutting down client connections...
+2015-10-12T12:00:15.754138000 31.506118s notice: All client connections closed.
+2015-10-12T12:00:15.754146000 31.506126s notice: Shutting down storage engine... (This may take a while if you had a lot of unflushed data in the writeback cache.)
+2015-10-12T12:00:15.757682000 31.509662s notice: Storage engine shut down.
+2015-10-12T12:00:29.309441000 0.005818s notice: Running rethinkdb 2.0.2 (CLANG 6.0 (clang-600.0.57))...
+2015-10-12T12:00:29.314043000 0.010418s notice: Running on Darwin 14.3.0 x86_64
+2015-10-12T12:00:29.314081000 0.010454s notice: Loading data from directory /Users/robin/Projects/triggeriq/server/rethinkdb_data
+2015-10-12T12:00:29.370866000 0.067241s info: Automatically using cache size of 100 MB
+2015-10-12T12:00:29.370886000 0.067259s warn: Cache size does not leave much memory for server and query overhead (available memory: 820 MB).
+2015-10-12T12:00:29.370896000 0.067269s warn: Cache size is very low and may impact performance.
+2015-10-12T12:00:29.372990000 0.069364s notice: Listening for intracluster connections on port 29015
+2015-10-12T12:00:29.374892000 0.071266s notice: Listening for client driver connections on port 28015
+2015-10-12T12:00:29.375327000 0.071701s notice: Listening for administrative HTTP connections on port 8080
+2015-10-12T12:00:29.375342000 0.071717s notice: Listening on addresses: 127.0.0.1, ::1
+2015-10-12T12:00:29.375345000 0.071720s notice: To fully expose RethinkDB on the network, bind to all addresses by running rethinkdb with the `--bind all` command line option.
+2015-10-12T12:00:29.375352000 0.071726s notice: Server ready, "Rajvinders_MacBook_Pro_local_dqy" 606dcb67-4879-4032-baa7-c7e41d6ac70b
+2015-10-12T12:00:29.497150000 0.193524s notice: A newer version of the RethinkDB server is available: 2.1.5-2. You can read the changelog at <https://github.com/rethinkdb/rethinkdb/releases>.
+2015-10-12T12:00:43.634365000 14.330207s notice: Server got SIGINT from pid 585, uid 501; shutting down...
+2015-10-12T12:00:43.634484000 14.330326s notice: Shutting down client connections...
+2015-10-12T12:00:43.634578000 14.330419s notice: All client connections closed.
+2015-10-12T12:00:43.634583000 14.330424s notice: Shutting down storage engine... (This may take a while if you had a lot of unflushed data in the writeback cache.)
+2015-10-12T12:00:43.640051000 14.335893s notice: Storage engine shut down.
+2015-10-12T12:03:48.714732000 0.006465s notice: Running rethinkdb 2.0.2 (CLANG 6.0 (clang-600.0.57))...
+2015-10-12T12:03:48.720779000 0.012510s notice: Running on Darwin 14.3.0 x86_64
+2015-10-12T12:03:48.720816000 0.012545s notice: Loading data from directory /Users/robin/Projects/triggeriq/server/rethinkdb_data
+2015-10-12T12:03:48.787234000 0.078964s info: Automatically using cache size of 100 MB
+2015-10-12T12:03:48.787253000 0.078982s warn: Cache size is very low and may impact performance.
+2015-10-12T12:03:48.788109000 0.079839s error: TCP socket creation failed for port 29015: Address already in use.
+2015-10-12T12:04:07.632012000 0.005190s notice: Running rethinkdb 2.0.2 (CLANG 6.0 (clang-600.0.57))...
+2015-10-12T12:04:07.635770000 0.008943s notice: Running on Darwin 14.3.0 x86_64
+2015-10-12T12:04:07.635809000 0.008981s notice: Loading data from directory /Users/robin/Projects/triggeriq/server/rethinkdb_data
+2015-10-12T12:04:07.718849000 0.092022s info: Automatically using cache size of 100 MB
+2015-10-12T12:04:07.718859000 0.092031s warn: Cache size is very low and may impact performance.
+2015-10-12T12:04:07.719667000 0.092839s notice: Listening for intracluster connections on port 29015
+2015-10-12T12:04:07.721282000 0.094454s notice: Listening for client driver connections on port 28015
+2015-10-12T12:04:07.721441000 0.094614s notice: Listening for administrative HTTP connections on port 8080
+2015-10-12T12:04:07.721450000 0.094622s notice: Listening on addresses: 127.0.0.1, ::1
+2015-10-12T12:04:07.721451000 0.094623s notice: To fully expose RethinkDB on the network, bind to all addresses by running rethinkdb with the `--bind all` command line option.
+2015-10-12T12:04:07.721454000 0.094627s notice: Server ready, "Rajvinders_MacBook_Pro_local_dqy" 606dcb67-4879-4032-baa7-c7e41d6ac70b
+2015-10-12T12:04:07.888547000 0.261720s notice: A newer version of the RethinkDB server is available: 2.1.5-2. You can read the changelog at <https://github.com/rethinkdb/rethinkdb/releases>.

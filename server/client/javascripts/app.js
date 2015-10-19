@@ -436,113 +436,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 });
 
-require.register("profile_sidebar", function(exports, require, module) {
-var ProfileSidebar = React.createClass({displayName: 'ProfileSidebar',
-
-  toggleCreateTriggerModal: function() {
-    console.log(this.props)
-    this.props.toggleCreateTriggerModal()
-  },
-
-  render: function() {
-    //console.log(this.props)
-    return (
-          React.createElement("div", {className: "col-md-2"}, 
-            React.createElement("span", {style: {fontWeight:"800"}}, "TRIGGERS",  
-              React.createElement("span", {style: {color:"#bbb",marginLeft:10,fontWeight:200}}, "(18) ")
-            ), 
-
-            React.createElement("a", {href: "javascript:", 
-               className: "btn btn-success btn-xs", 
-               onClick: this.toggleCreateTriggerModal, 
-               style: {float:"right"}}, 
-              React.createElement("i", {className: "fa fa-plus"}))
-          )
-      
-    )
-  }
-})
-
-var HiringProfileCard = React.createClass({displayName: 'HiringProfileCard',
-  render: function() {
-    return (
-      React.createElement("div", {style: {cursor:"pointer"}}, 
-        React.createElement("h5", null, " ", React.createElement("i", {className: "fa fa-suitcase"}), " " + ' ' +
-          "Hiring Trigger Name"), 
-        React.createElement("h5", null, React.createElement("small", null, "Company Info blah blah")), 
-        React.createElement("hr", null)
-      )
-    )
-  }
-})
-
-var PressProfileCard = React.createClass({displayName: 'PressProfileCard',
-  render: function() {
-    return (
-      React.createElement("div", {style: {cursor:"pointer"}}, 
-        React.createElement("h5", null, " ", React.createElement("i", {className: "fa fa-bullhorn"}), " " + ' ' +
-          "Press Trigger Name"), 
-        React.createElement("h5", null, React.createElement("small", null, "Company Info blah blah")), 
-      React.createElement("hr", null)
-      )
-    )
-  }
-})
-
-var TwitterProfileCard = React.createClass({displayName: 'TwitterProfileCard',
-  render: function() {
-    return (
-      React.createElement("div", {style: {cursor:"pointer"}}, 
-        React.createElement("div", null, 
-          React.createElement("h5", null, React.createElement("i", {className: "fa fa-twitter"}), "  " + ' ' +
-            "Twitter Trigger Name"), 
-          React.createElement("h5", null, React.createElement("small", null, 
-              React.createElement("span", {style: {fontWeight:"bold"}}, "Keywords: "), 
-                "blah blah"))
-        )
-      )
-    )
-  }
-})
-
-module.exports = ProfileSidebar
-
-});
-
-;require.register("range_slider", function(exports, require, module) {
-//var Slider = require("bootstrap-slider");
-
-var RangeSlider = React.createClass({displayName: 'RangeSlider',
-  componentDidMount: function() {
-    //$(".selector").slider({ from: 5, to: 50})
-   $( "#slider-range" ).slider({
-      range: true,
-      min: 0,
-      max: 500,
-      values: [ 75, 300 ],
-      slide: function( event, ui ) {
-        $( "#amount" ).val( "$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );
-      }
-    });
-  },
-  render: function() {
-    return (
-      React.createElement("div", null, 
-        "The range slider", 
-        React.createElement("input", {type: "text", id: "amount"}), 
-
-        React.createElement("div", {id: "slider-range"})
- 
-      )
-    )
-  }
-})
-
-module.exports = RangeSlider
-
-});
-
-;require.register("routes", function(exports, require, module) {
+require.register("old_routes", function(exports, require, module) {
 var DataExplorer = require("table")
 var CompanyCard = require("company_card")
 var CompanyDetailOverlay = require("company_detail_overlay")
@@ -550,6 +444,7 @@ var UserDatasetTable = require("user_dataset_table")
 var ProfileSidebar = require("profile_sidebar")
 var TriggerList = require("trigger_list")
 var CreateTriggerModal = require("create_trigger_modal")
+var WebsocketListener = require("websocket_listener")
 
 var TabbedArea = ReactBootstrap.TabbedArea
 var TabPane = ReactBootstrap.TabPane
@@ -558,6 +453,7 @@ var MenuItem= ReactBootstrap.SplitButton
 var Modal= ReactBootstrap.Modal
 var Button = ReactBootstrap.Button
 var Thumbnail= ReactBootstrap.Thumbnail
+var Alert = ReactBootstrap.Alert
 
 var Route = ReactRouter.Route;
 var RouteHandler = ReactRouter.RouteHandler;
@@ -798,7 +694,7 @@ var Main = React.createClass({displayName: 'Main',
   componentWillMount: function() {
     var _this = this;
     $.ajax({
-      url: "http://localhost:5000/profiles",
+      url: location.origin+"/profiles",
       dataType:"json",
       success: function(res) {
         console.log(res)
@@ -810,7 +706,7 @@ var Main = React.createClass({displayName: 'Main',
     })
 
     $.ajax({
-      url: "http://localhost:5000/triggers",
+      url: location.origin+"/triggers",
       dataType:"json",
       success: function(res) {
         console.log(res)
@@ -818,7 +714,7 @@ var Main = React.createClass({displayName: 'Main',
 
         _.map(_this.state.triggers, function(trig) {
           $.ajax({
-            url:"http://localhost:5000/company/"+trig.company_key+"/employees",
+            url: location.origin+"/company/"+trig.company_key+"/employees",
             triggerId: trig.company_key,
             dataType:"json",
             success: function(res) {
@@ -866,12 +762,14 @@ var Main = React.createClass({displayName: 'Main',
               lol: "yoyo", 
               toggleCreateTrigerModal: this.toggleCreateTriggerModal}), 
           React.createElement("div", {className: "col-md-10", style: {paddingLeft:30}}, 
-            React.createElement("div", {style: {display:"block",marginLeft:"auto",marginRight:100,textAlign:"center",marginTop:8}}, 
+            React.createElement("div", {style: {display:"block",marginLeft:"auto",marginRight:100,
+                         textAlign:"center",marginTop:8}}, 
               React.createElement("span", {style: {fontWeight:"800"}}, "TODAY "), 
-              React.createElement("span", {style: {color:"#bbb"}}, "August 28th")
+              React.createElement("span", {style: {color:"#bbb"}}, moment().format("MMMM Do"))
             ), 
+
+            React.createElement(WebsocketListener, null), 
             React.createElement("a", {href: "javascript:", className: "btn btn-success", style: {float:"right",marginTop:-90,display:"none"}}, "Create Trigger"), 
-            React.createElement("a", {href: "javascript:", className: "btn btn-default btn-xs", style: {float:"right",marginTop:-25}}, "List View"), 
             React.createElement("br", null), 
             CompanyCards
           )
@@ -905,6 +803,282 @@ var routes = (
     React.createElement(Route, {path: "/dataset/:id/analysis", handler: DatasetAnalysis}), 
     React.createElement(Route, {path: "/dataset/:id/collaborators", handler: DatasetCollaborators}), 
     React.createElement(Route, {path: "/dataset/:id/visualizations", handler: DatasetVisualizations})
+  )
+);
+
+module.exports = routes;
+
+});
+
+require.register("profile_sidebar", function(exports, require, module) {
+var ProfileSidebar = React.createClass({displayName: 'ProfileSidebar',
+
+  toggleCreateTriggerModal: function() {
+    console.log(this.props)
+    this.props.toggleCreateTriggerModal()
+  },
+
+  render: function() {
+    //console.log(this.props)
+    return (
+          React.createElement("div", {className: "col-md-2"}, 
+            React.createElement("span", {style: {fontWeight:"800"}}, "TRIGGERS",  
+              React.createElement("span", {style: {color:"#bbb",marginLeft:10,fontWeight:200}}, "(18) ")
+            ), 
+
+            React.createElement("a", {href: "javascript:", 
+               className: "btn btn-success btn-xs", 
+               onClick: this.toggleCreateTriggerModal, 
+               style: {float:"right"}}, 
+              React.createElement("i", {className: "fa fa-plus"}))
+          )
+      
+    )
+  }
+})
+
+var HiringProfileCard = React.createClass({displayName: 'HiringProfileCard',
+  render: function() {
+    return (
+      React.createElement("div", {style: {cursor:"pointer"}}, 
+        React.createElement("h5", null, " ", React.createElement("i", {className: "fa fa-suitcase"}), " " + ' ' +
+          "Hiring Trigger Name"), 
+        React.createElement("h5", null, React.createElement("small", null, "Company Info blah blah")), 
+        React.createElement("hr", null)
+      )
+    )
+  }
+})
+
+var PressProfileCard = React.createClass({displayName: 'PressProfileCard',
+  render: function() {
+    return (
+      React.createElement("div", {style: {cursor:"pointer"}}, 
+        React.createElement("h5", null, " ", React.createElement("i", {className: "fa fa-bullhorn"}), " " + ' ' +
+          "Press Trigger Name"), 
+        React.createElement("h5", null, React.createElement("small", null, "Company Info blah blah")), 
+      React.createElement("hr", null)
+      )
+    )
+  }
+})
+
+var TwitterProfileCard = React.createClass({displayName: 'TwitterProfileCard',
+  render: function() {
+    return (
+      React.createElement("div", {style: {cursor:"pointer"}}, 
+        React.createElement("div", null, 
+          React.createElement("h5", null, React.createElement("i", {className: "fa fa-twitter"}), "  " + ' ' +
+            "Twitter Trigger Name"), 
+          React.createElement("h5", null, React.createElement("small", null, 
+              React.createElement("span", {style: {fontWeight:"bold"}}, "Keywords: "), 
+                "blah blah"))
+        )
+      )
+    )
+  }
+})
+
+module.exports = ProfileSidebar
+
+});
+
+;require.register("range_slider", function(exports, require, module) {
+//var Slider = require("bootstrap-slider");
+
+var RangeSlider = React.createClass({displayName: 'RangeSlider',
+  componentDidMount: function() {
+    //$(".selector").slider({ from: 5, to: 50})
+   $( "#slider-range" ).slider({
+      range: true,
+      min: 0,
+      max: 500,
+      values: [ 75, 300 ],
+      slide: function( event, ui ) {
+        $( "#amount" ).val( "$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );
+      }
+    });
+  },
+  render: function() {
+    return (
+      React.createElement("div", null, 
+        "The range slider", 
+        React.createElement("input", {type: "text", id: "amount"}), 
+
+        React.createElement("div", {id: "slider-range"})
+ 
+      )
+    )
+  }
+})
+
+module.exports = RangeSlider
+
+});
+
+;require.register("routes", function(exports, require, module) {
+var TabbedArea = ReactBootstrap.TabbedArea
+var TabPane = ReactBootstrap.TabPane
+var SplitButton = ReactBootstrap.SplitButton
+var MenuItem= ReactBootstrap.SplitButton
+var Modal= ReactBootstrap.Modal
+var Button = ReactBootstrap.Button
+var Thumbnail= ReactBootstrap.Thumbnail
+var Alert = ReactBootstrap.Alert
+
+var Route = ReactRouter.Route;
+var RouteHandler = ReactRouter.RouteHandler;
+
+var Navbar = React.createClass({displayName: 'Navbar',
+  render: function() {
+    return (
+      React.createElement("header", {className: "header", style: {paddingTop:20,paddingBottom:40}}, 
+        React.createElement("ul", {className: "text-muted"}, 
+          React.createElement("li", {className: "app-logo"}, 
+            React.createElement("div", null, 
+            React.createElement("img", {src: "images/blaze-logo.png", style: {marginTop:4,height:18,marginLeft:-15,display:"none"}}), 
+            React.createElement("div", {style: {}, style: {color:"#FFBB01",marginLeft:-20}}, 
+              React.createElement("i", {className: "fa fa-bolt"}), 
+              "ClearSpark")
+            )
+          ), 
+          React.createElement("div", {style: {display:"none"}}, 
+            React.createElement("li", {style: {fontWeight:"bold",color:"#0079ff",color:"#000"}}, "DATASETS"), 
+            React.createElement("li", null, "USERS"), 
+            React.createElement("li", null, "EXPLORE"), 
+            React.createElement("li", null, "COMPUTE"), 
+            React.createElement("li", {style: {float:"right",marginRight:50}}, "LOGOUT")
+          )
+        )
+      )
+    )
+  }
+})
+
+
+var Main = React.createClass({displayName: 'Main',
+  render: function() {
+    return (
+      React.createElement("div", {style: {height:"100%"}}
+      )
+    )
+  }
+})
+
+var Dashboard = React.createClass({displayName: 'Dashboard',
+  render: function() {
+    return (
+      React.createElement("div", null
+      )
+    )
+  }
+})
+
+var App = React.createClass({displayName: 'App',
+  render: function() {
+    return (
+      React.createElement("div", {className: "app"}, 
+        React.createElement("div", {className: "home-page"}
+        ), 
+        React.createElement("div", {className: ""}, 
+          React.createElement("div", {className: "col-xs-5 col-sm-3 col-md-3", style: {borderRight:"1px solid #eee"}}, 
+              React.createElement("br", null), 
+              React.createElement("div", {style: {fontWeight:800, fontSize:24,color:"#FFBB01",marginLeft:20}}, 
+                React.createElement("div", {style: {backgroundColor:"#FFBB01", display:"inline",width:20,height:20,borderRadius:20}}, 
+                React.createElement("i", {className: "fa fa-bolt", style: {color:"white",fontSize:12}})
+                ), 
+                "ClearSpark"), 
+
+              React.createElement("hr", null), 
+              React.createElement("br", null), 
+            React.createElement("ul", {style: {}}, 
+              React.createElement("li", null, React.createElement("h4", null, "INBOX")), 
+              React.createElement("hr", null), 
+              React.createElement("li", null, "LOOKUP"), 
+              React.createElement("hr", null), 
+              React.createElement("li", null, "BILLING"), 
+              React.createElement("hr", null), 
+              React.createElement("li", null, "ACCOUNT"), 
+              React.createElement("hr", null), 
+              React.createElement("li", null, "API KEYS"), 
+              React.createElement("hr", null), 
+              React.createElement("li", null, "LOGS"), 
+              React.createElement("hr", null), 
+              React.createElement("br", null), 
+              React.createElement("li", null, "Get Started"), 
+              React.createElement("li", null, "Api Docs"), 
+              React.createElement("li", null, "Support"), 
+              React.createElement("li", null, "Logout")
+            )
+          ), 
+          React.createElement("div", {className: "col-xs-7 col-sm-9 col-md-9 main-bg"}, 
+            React.createElement(RouteHandler, null)
+          )
+        )
+      )
+    )
+  }
+});
+
+var Lookup = React.createClass({displayName: 'Lookup',
+  render: function() {
+    return (
+      React.createElement("div", null, 
+        React.createElement("div", null, 
+          React.createElement("br", null), 
+          React.createElement("input", {className: "form-control lookup-input", placeholder: "Enter search term"})
+          
+        )
+
+      )
+    )
+  }
+})
+
+var Contacts = React.createClass({displayName: 'Contacts',
+  render: function() {
+    return (
+      React.createElement("div", null, 
+        React.createElement("div", {className: "row"}, 
+          React.createElement("div", {className: ""}, 
+            React.createElement("div", {style: {width:250,height:"100%",backgroundColor:"rgba(255,255,255,0.3)",position:"absolute",left:0, boxShadow: "rgba(0, 0, 0, 0.0980392) 0px 1px 2px 1px"}}, 
+              "lol"
+            )
+          ), 
+          React.createElement("div", {className: "", style: {marginLeft:350,marginRight:100}}, 
+            React.createElement("br", null), 
+            React.createElement("div", {className: "panel panel-default", style: {boxShadow: "rgba(0, 0, 0, 0.0980392) 0px 1px 2px 1px",height:150}}, 
+              React.createElement("div", {className: "panel-body"}, 
+                "lol"
+              )
+            ), 
+            React.createElement("br", null), 
+            React.createElement("div", {className: "panel panel-default", style: {boxShadow: "rgba(0, 0, 0, 0.0980392) 0px 1px 2px 1px",height:150}}, 
+              React.createElement("div", {className: "panel-body"}, 
+                "lol"
+              )
+            ), 
+            React.createElement("br", null), 
+            React.createElement("div", {className: "panel panel-default", style: {boxShadow: "rgba(0, 0, 0, 0.0980392) 0px 1px 2px 1px",height:150}}, 
+              React.createElement("div", {className: "panel-body"}, 
+                "lol"
+              )
+            )
+          )
+          
+        )
+
+      )
+    )
+  }
+})
+
+// declare our routes and their hierarchy
+var routes = (
+  React.createElement(Route, {handler: App}, 
+    React.createElement(Route, {path: "", handler: Main}), 
+    React.createElement(Route, {path: "lookup", handler: Lookup}), 
+    React.createElement(Route, {path: "contacts", handler: Contacts})
   )
 );
 
@@ -1111,5 +1285,56 @@ module.exports = UserDatasetTable;
 
 });
 
+require.register("websocket_listener", function(exports, require, module) {
+var _SockJS = {
+  start: function() {
+    console.log("start")
+  }
+}
 
+    var sockJS = new SockJS("http://127.0.0.1:8988/sockjs"),
+                        userId = 0,
+                        users = {};
+
+var WebsocketListener = React.createClass({displayName: 'WebsocketListener',
+  componentDidMount: function() {
+    //SockJS.start()
+    var sockJS = new SockJS("http://127.0.0.1:8988/sockjs"),
+                        userId = 0,
+                        users = {};
+
+    sockJS.onopen = function() {
+        console.log("connected")
+    }
+
+    sockJS.onmessage = function(event) {
+      event.data = JSON.parse(event.data);
+      console.log(event)
+      var msg = event.data.msg,
+          user = event.data.user,
+          el;
+    }
+
+    sockJS.onclose = function() {
+      console.log("on close")
+    };
+  },
+
+  render: function() {
+    return (
+      React.createElement("div", {className: "alert alert-info", 
+           style: {textAlign:"center",marginTop:10,cursor:"pointer"}}, 
+        React.createElement("a", {href: "javascript:", className: "btn btn-default btn-xs", style: {float:"right",marginTop:-45}}, "List View"), 
+        React.createElement("strong", null, "36 new prospects found"), "   " + ' ' +
+            "Click this here to load!"
+      )
+    )
+  }
+})
+
+module.exports = WebsocketListener
+
+});
+
+;
 //# sourceMappingURL=app.js.map

@@ -50,14 +50,15 @@ class CompanyNameToDomain:
         domains = f[:3].reset_index().to_dict("r")
         try:
           print domains[0]["domain"]
-          return domains[0]["domain"]
+          #return domains[0]["domain"]
+          return domains
         except:
           return None
         #print domains
         # TODO persist
 
     def _update_record(self, company_name, _id):
-        domain = self.get(company_name)
+        domain = self.get(company_name)[0]["domain"]
         conn = r.connect(host="localhost", port=28015, db="triggeriq")
         #r.table('hiring_signals').get(_id).update({"domain":domain}).run(conn)
         print _id, domain
