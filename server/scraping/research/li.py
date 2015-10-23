@@ -31,17 +31,23 @@ class Linkedin:
         for link in df.link:
             q.enqueue(Linkedin()._signal, link)
 
-    def _daily_news(self, domain, api_key="",  name=""):
-        df = Google().search("site:linkedin.com/company {0}".format(domain))
-        if df.empty: return 
-        #for link in df.link:
-        link = df.link.tolist()[0]
-        print link
-        html = Google().cache(link)
-        posts = self._company_posts(html)
-        #Linkedin()._signal(link, api_key)
-        data = {"data":posts, "company_name":name, "domain":domain}
-        CompanyExtraInfoCrawl()._persist(data, "linkedin_posts", api_key)
+    def _events(self, domain, api_key="",  name=""):
+        html = Google().cache(domain)
+        data = self._company_posts(html)
+        data["event_type"] = "LinkedinEvent"
+        data["domain"] = domain
+        data = data.applymap(lambda x: self._remove_non_ascii(x))
+        data["event_key"] = ["".join(map(str, _data.values()))[:124]
+                             for _data in data.to_dict("r")]
+        data = [row.dropna().to_dict() for i, row in data.iterrows()]
+        r.table("events").insert(data).run(conn)
+        return data
+
+    def _remove_non_ascii(self, text):
+        try:
+            return ''.join(i for i in text if ord(i)<128)
+        except:
+            return text
 
     def _pulse_posts():
         ''' '''
@@ -52,10 +58,10 @@ class Linkedin:
         for post in li.find_all("li",{"class":"feed-item"}):
             img = post.find("img")
             #img = img["src"] if img else ""
-            if img:
-              img = img["src"] if "src" in img.keys() else ""
-            else:
-              img = ""
+            try:
+                img = img["src"] if "src" in img.keys() else ""
+            except:
+                img = None
             date = post.find("a", {"class":"nus-timestamp"}).text
             timestamp = Helper()._str_to_timestamp(date)
             post = post.find("span",{"class":"commentary"})
@@ -63,11 +69,12 @@ class Linkedin:
                 link = [i.text for i in post.find_all("a")]
             except:
                 continue
-            data = {"img":img, "post":post.text, "link":link, "date":date, 
+            data = {"img":img, "post":post.text, "link":link, "date":date,
                     "timestamp":timestamp}
             #TODO - add timestamp
             posts.append(data)
-        return posts
+        return pd.DataFrame(posts)
+
 
     def _parse_google_span_for_title_and_company(self, link_span):
         ''' Parse Google Search Linkedin Text For Current Position '''

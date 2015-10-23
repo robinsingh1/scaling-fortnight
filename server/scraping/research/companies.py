@@ -37,7 +37,7 @@ q = Queue(connection=conn)
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-class Companies:
+class OldCompanies:
     # TODO
     def _tags_describing_company():
         ''' '''

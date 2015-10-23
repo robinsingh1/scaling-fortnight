@@ -1,13 +1,23 @@
 from splinter import Browser
 import pandas as pd
 #from parse import Parse
-#from google import Google
+from google import *
 import json
 import urllib
 import requests
 from bs4 import BeautifulSoup
 from crawl import CompanyInfoCrawl, CompanyExtraInfoCrawl
 import tldextract
+import rethinkdb as r
+
+conn = r.connect(db="clearspark")
+
+#return google_results
+auth = requests.auth.HTTPProxyAuth('robinsingh', '951562nileppez')
+proxies = {'http': 'us-il.proxymesh.com:31280'}
+un, pw = "customero", "iUyET3ErxR"
+CRAWLERA_URL = "http://{0}:{1}@paygo.crawlera.com/fetch?".format(un, pw)
+SPLASH_URL = "http://localhost:8950/render.html?"
 
 class Twitter:
     def _signal(self, link, api_key=""):
@@ -30,37 +40,46 @@ class Twitter:
         for link in df.link:
             q.enqueue(Twitter()._signal, link)
 
-    def _daily_news(self, domain, api_key="", name=""):
-        df = Google().search('site:twitter.com {0}'.format(domain))
-        if df.empty: df = Google().search('site:twitter.com {0}'.format(name))
-        link = df.link.tolist()[0]
-        html = Google().cache(link)
-        tweets = self._tweets(html, api_key)
-        data = {"data":tweets, "company_name":name, "domain":domain}
-        CompanyExtraInfoCrawl()._persist(data, "tweets")
+    def _remove_non_ascii(self, text):
+        try:
+            return ''.join(i for i in text if ord(i)<128)
+        except:
+            return text
 
-    def _tweets(self, html, api_key):
+    def _events(self, domain, api_key="", name=""):
+        html = Crawlera().get(domain).text
+        data = self._tweets(html)
+        data["event_type"] = "TweetEvent"
+        data["domain"] = domain
+        data = data.applymap(lambda x: self._remove_non_ascii(x))
+        data["event_key"] = ["".join(map(str, _data.values()))[:124]
+                             for _data in data.to_dict("r")]
+        data = [row.dropna().to_dict() for i, row in data.iterrows()]
+        r.table("events").insert(data).run(conn)
+        return data
+
+    def _tweets(self, html, api_key=""):
         #html = Google().cache("https://twitter.com/guidespark")
         tw = BeautifulSoup(html)
         tweets = []
-        for tweet in tw.find_all("div",{"class":"ProfileTweet"}):
-            timestamp = tweet.find("span", {"class":"js-short-timestamp"})["data-time"]
-            text = tweet.find("p",{"class":"ProfileTweet-text"}).text
+        for tweet in tw.find_all("li",{"class":"js-stream-item"}):
+            timestamp = tweet.find("span", {"class":"js-short-timestamp"})
+            timestamp = timestamp["data-time"] if timestamp else None
+            text = tweet.find("p",{"class":"tweet-text"})
+            text = text.text if text else None
             _hashtags = tweet.find_all("a",{"class":"twitter-hashtag"})
             hashtags = [hashtag.text if hashtag else "" for hashtag in _hashtags]
             _mentions = tweet.find_all("a",{"class":"twitter-atreply"})
             mentions = [reply.text if reply else "" for reply in _mentions]
             _links = tweet.find_all("a",{"class":"twitter-timeline-link"})
             links = [link.text for link in _links]
-
             _imgs = tweet.find_all("img",{"class":"TwitterPhoto-mediaSource"})
             photos = [img["src"] if img else "" for img in _imgs]
-
+            
             tweet = {"text":text,"hashtags":hashtags,"mentions":mentions,
                      "links":links, "photos":photos, "timestamp":timestamp}
-            #TODO - add timestamp
             tweets.append(tweet)
-        #tweets = pd.DataFrame(tweets)
+        tweets = pd.DataFrame(tweets)
         return tweets
       
     def _domain_search(self, domain, api_key="", name=""):
@@ -139,17 +158,24 @@ class Facebook:
               _post["link_title"] = link_title
               _post["link_summary"] = link_summary
             posts.append(_post)
-        return posts
+        return pd.DataFrame(posts)
 
-    def _daily_news(self, domain, api_key="", name=""):
-        df = Google().search('site:facebook.com {0}'.format(domain))
-        if df.empty: df = Google().search('site:facebook.com {0}'.format(name))
-        link = df.link.tolist()[0]
-        html = Google().cache(link)
-        posts = Facebook()._posts(html)
-        posts = pd.DataFrame(posts).fillna("")
-        data = {"data":posts.to_dict("r"), "domain":domain, "company_name":name}
-        CompanyExtraInfoCrawl()._persist(data, "facebook_posts", api_key)
+    def _events(self, url, api_key="", name=""):
+        #url = "https://facebook.com/guidespark"
+        url = 'http://webcache.googleusercontent.com/search?q=cache:'+url
+        url = CRAWLERA_URL + urllib.urlencode({'url':url})
+        url = urllib.unquote_plus(url)
+        url = SPLASH_URL + urllib.urlencode({'url': url})
+        html = requests.get(url).text
+        data = self._posts(html)
+        data["url"] = url
+        data["event_type"] = "FacebookEvent"
+        data = data.applymap(lambda x: self._remove_non_ascii(x))
+        data["event_key"] = ["".join(map(str, _data.values()))[:124]
+                             for _data in data.to_dict("r")]
+        data = [row.dropna().to_dict() for i, row in data.iterrows()]
+        r.table("events").insert(data).run(conn)
+        return data
 
     def _domain_search(self, domain, api_key="", name=""):
         df = Google().search('site:facebook.com {0}'.format(domain))
@@ -201,4 +227,10 @@ class Facebook:
           data["likes"] = likes.text.split(' likes')[0].replace(',', "")
           data["likes"] = int(data["likes"])
         return data
+
+    def _remove_non_ascii(self, text):
+        try:
+            return ''.join(i for i in text if ord(i)<128)
+        except:
+            return text
         

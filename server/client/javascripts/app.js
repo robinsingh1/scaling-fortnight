@@ -436,7 +436,71 @@ document.addEventListener('DOMContentLoaded', function() {
 
 });
 
-require.register("old_routes", function(exports, require, module) {
+require.register("landing_page", function(exports, require, module) {
+var LandingPage = React.createClass({displayName: 'LandingPage',
+  home: function() {
+    location.href="/#landing"
+  },
+
+  render: function() {
+    return (
+      React.createElement("div", {style: {paddingTop:50}}, 
+
+        React.createElement("h4", {style: {fontWeight:800,fontSize:22,cursor:"pointer"}, 
+          onClick: this.home}, "ClearSpark"), 
+
+        React.createElement("a", {href: "#pricing", className: "", style: {float:"right",marginTop:-32,marginRight:300,fontWeight:600,fontSize:12,color:"#0072f0"}}, "PRICING"), 
+
+        React.createElement("a", {href: "#login", className: "btn btn-primary", style: {float:"right",marginTop:-40}}, "LOG IN"), 
+        React.createElement("div", {className: "row", style: {marginTop:40}}, 
+        React.createElement("div", {className: "col-md-6"}, 
+          React.createElement("h1", null, "Keep up to date with your business contacts"), 
+          React.createElement("br", null), 
+          React.createElement("hr", null), 
+          React.createElement("h4", {style: {marginTop:10}}, "STOP HOURS RESEARCHING COMPANIES"), 
+          React.createElement("h4", {style: {marginTop:20,fontStyle:"italic"}}, "START REACHING OUT TO PROSPECTS WITH RELEVANT INFORMATION"), 
+          React.createElement("input", {className: "form-control input-lg", style: {marginTop:30,width:300,borderRadius:2,fontSize:16}, placeholder: "EMAIL"}), 
+          React.createElement("input", {className: "form-control input-lg", style: {marginTop:10,width:300,borderRadius:2,fontSize:16}, placeholder: "PASSWORD", type: "password"}), 
+          React.createElement("a", {className: "btn btn-lg btn-success", style: {marginTop:10,width:150,fontSize:16}}, "SIGN UP")
+        ), 
+
+        React.createElement("div", {className: "col-md-6"}, 
+          React.createElement("img", {src: "images/timeline.png", style: {height:170,marginTop:100,marginLeft:100}})
+        )
+        )
+      )
+    )
+  }
+})
+
+
+module.exports = LandingPage
+
+});
+
+;require.register("login", function(exports, require, module) {
+var Login = React.createClass({displayName: 'Login',
+  render: function() {
+    return (
+      React.createElement("div", {style: {textAlign:"center",paddingTop:120}}, 
+
+          React.createElement("img", {src: "images/radar_2.png", style: {height:100}}), 
+          React.createElement("br", null), 
+        React.createElement("input", {className: "form-control input-lg", style: {fontSize:16, marginRight:"auto",marginLeft:"auto",marginTop:30,width:300,borderRadius:2}, placeholder: "EMAIL"}), 
+        React.createElement("input", {className: "form-control input-lg", style: {fontSize:16, marginTop:10,marginLeft:"auto",marginRight:"auto",width:300,borderRadius:2}, placeholder: "PASSWORD", type: "password"}), 
+        React.createElement("br", null), 
+        React.createElement("a", {className: "btn btn-lg btn-primary", style: {marginTop:10,width:300, fontSize:16}}, "LOG IN")
+
+      )
+    )
+  }
+})
+
+module.exports = Login
+
+});
+
+;require.register("old_routes", function(exports, require, module) {
 var DataExplorer = require("table")
 var CompanyCard = require("company_card")
 var CompanyDetailOverlay = require("company_detail_overlay")
@@ -810,7 +874,97 @@ module.exports = routes;
 
 });
 
-require.register("profile_sidebar", function(exports, require, module) {
+require.register("pricing", function(exports, require, module) {
+var LandingPage = React.createClass({displayName: 'LandingPage',
+  home: function() {
+    location.href="/#landing"
+  },
+
+  render: function() {
+    return (
+      React.createElement("div", {style: {paddingTop:50}}, 
+
+        React.createElement("h4", {style: {fontWeight:800,fontSize:22,cursor:"pointer"}, 
+          onClick: this.home}, "ClearSpark"), 
+
+        React.createElement("a", {href: "#pricing", className: "", style: {float:"right",marginTop:-32,marginRight:300,fontWeight:600,fontSize:12,color:"#0072f0"}}, "PRICING"), 
+
+
+        React.createElement("a", {href: "#signup", className: "btn btn-success", style: {float:"right",marginTop:-40,marginRight:80}}, "SIGN UP"), 
+        React.createElement("a", {href: "#login", className: "btn btn-primary", style: {float:"right",marginTop:-40}}, "LOG IN"), 
+        React.createElement("div", {className: "row", style: {marginTop:40}}, 
+          React.createElement("div", {className: "col-md-4 col-sm-4 col-xs-4"}, 
+            React.createElement("div", {className: "pricing-col"}, 
+            React.createElement("br", null), 
+            "Starter", 
+            React.createElement("hr", null), 
+            React.createElement("br", null), 
+            React.createElement("h1", null, "$99 ", React.createElement("small", null, "/ month")), 
+            React.createElement("br", null), 
+            React.createElement("hr", null), 
+              "Unlimited Prospect Profiles", 
+            React.createElement("hr", null), 
+              "Unlimited Company Profiles", 
+            React.createElement("hr", null), 
+            React.createElement("br", null), 
+            React.createElement("br", null), 
+            React.createElement("br", null), 
+            React.createElement("br", null), 
+            React.createElement("br", null)
+            )
+          ), 
+          React.createElement("div", {className: "col-md-4 col-sm-4 col-xs-4"}, 
+            React.createElement("div", {className: "pricing-col"}, 
+            React.createElement("br", null), 
+            "Professional", 
+            React.createElement("hr", null), 
+            React.createElement("br", null), 
+            React.createElement("h1", null, "$499 ", React.createElement("small", null, "/ month")), 
+            React.createElement("br", null), 
+            React.createElement("hr", null), 
+              "Unlimited Prospect Profiles", 
+            React.createElement("hr", null), 
+              "Unlimited Company Profiles", 
+            React.createElement("hr", null), 
+              "CRM Integration", 
+            React.createElement("hr", null), 
+              "Employee Search", 
+            React.createElement("br", null), 
+            React.createElement("br", null)
+            )
+          ), 
+          React.createElement("div", {className: "col-md-4 col-sm-4 col-xs-4"}, 
+            React.createElement("div", {className: "pricing-col"}, 
+            React.createElement("br", null), 
+            "Enterprise", 
+            React.createElement("hr", null), 
+            React.createElement("br", null), 
+            React.createElement("h1", null, "$999 ", React.createElement("small", null, "/ month")), 
+            React.createElement("br", null), 
+            React.createElement("hr", null), 
+              "Unlimited Prospect + Company Profiles", 
+            React.createElement("hr", null), 
+              "CRM Integration", 
+            React.createElement("hr", null), 
+              "Employee Search", 
+            React.createElement("hr", null), 
+              "Employee Contact Information", 
+            React.createElement("br", null), 
+            React.createElement("br", null)
+          )
+          )
+        )
+      )
+    )
+  }
+})
+
+
+module.exports = LandingPage
+
+});
+
+;require.register("profile_sidebar", function(exports, require, module) {
 var ProfileSidebar = React.createClass({displayName: 'ProfileSidebar',
 
   toggleCreateTriggerModal: function() {
@@ -925,6 +1079,11 @@ var Modal= ReactBootstrap.Modal
 var Button = ReactBootstrap.Button
 var Thumbnail= ReactBootstrap.Thumbnail
 var Alert = ReactBootstrap.Alert
+var LandingPage = require("landing_page")
+var Pricing = require("pricing")
+var Login = require("login")
+var Signup = require("signup")
+var Sidebar = require("sidebar")
 
 var Route = ReactRouter.Route;
 var RouteHandler = ReactRouter.RouteHandler;
@@ -937,8 +1096,7 @@ var Navbar = React.createClass({displayName: 'Navbar',
           React.createElement("li", {className: "app-logo"}, 
             React.createElement("div", null, 
             React.createElement("img", {src: "images/blaze-logo.png", style: {marginTop:4,height:18,marginLeft:-15,display:"none"}}), 
-            React.createElement("div", {style: {}, style: {color:"#FFBB01",marginLeft:-20}}, 
-              React.createElement("i", {className: "fa fa-bolt"}), 
+            React.createElement("div", {style: {}, style: {color:"#FFBB01",marginLeft:-20}}, " ", React.createElement("i", {className: "fa fa-bolt"}), 
               "ClearSpark")
             )
           ), 
@@ -977,44 +1135,21 @@ var Dashboard = React.createClass({displayName: 'Dashboard',
 var App = React.createClass({displayName: 'App',
   render: function() {
     return (
-      React.createElement("div", {className: "app"}, 
-        React.createElement("div", {className: "home-page"}
-        ), 
-        React.createElement("div", {className: ""}, 
-          React.createElement("div", {className: "col-xs-5 col-sm-3 col-md-3", style: {borderRight:"1px solid #eee"}}, 
-              React.createElement("br", null), 
-              React.createElement("div", {style: {fontWeight:800, fontSize:24,color:"#FFBB01",marginLeft:20}}, 
-                React.createElement("div", {style: {backgroundColor:"#FFBB01", display:"inline",width:20,height:20,borderRadius:20}}, 
-                React.createElement("i", {className: "fa fa-bolt", style: {color:"white",fontSize:12}})
-                ), 
-                "ClearSpark"), 
+      React.createElement("div", {className: "container app"}, 
+          React.createElement(RouteHandler, null)
+      )
+    )
+  }
+})
 
-              React.createElement("hr", null), 
-              React.createElement("br", null), 
-            React.createElement("ul", {style: {}}, 
-              React.createElement("li", null, React.createElement("h4", null, "INBOX")), 
-              React.createElement("hr", null), 
-              React.createElement("li", null, "LOOKUP"), 
-              React.createElement("hr", null), 
-              React.createElement("li", null, "BILLING"), 
-              React.createElement("hr", null), 
-              React.createElement("li", null, "ACCOUNT"), 
-              React.createElement("hr", null), 
-              React.createElement("li", null, "API KEYS"), 
-              React.createElement("hr", null), 
-              React.createElement("li", null, "LOGS"), 
-              React.createElement("hr", null), 
-              React.createElement("br", null), 
-              React.createElement("li", null, "Get Started"), 
-              React.createElement("li", null, "Api Docs"), 
-              React.createElement("li", null, "Support"), 
-              React.createElement("li", null, "Logout")
-            )
-          ), 
+var AuthenticatedApp = React.createClass({displayName: 'AuthenticatedApp',
+  render: function() {
+    return (
+      React.createElement("div", {className: "app"}, 
+          React.createElement(Sidebar, null), 
           React.createElement("div", {className: "col-xs-7 col-sm-9 col-md-9 main-bg"}, 
             React.createElement(RouteHandler, null)
           )
-        )
       )
     )
   }
@@ -1035,39 +1170,146 @@ var Lookup = React.createClass({displayName: 'Lookup',
   }
 })
 
+var Feed = React.createClass({displayName: 'Feed',
+  render: function() {
+    return (
+        React.createElement("div", {className: "col-md-offset-2 col-md-8"}
+        )
+    )
+  }
+})
+
+var Feed = React.createClass({displayName: 'Feed',
+  render: function() {
+    return (
+        React.createElement("div", {className: "col-md-offset-2 col-md-7"}, 
+          React.createElement("br", null), 
+          React.createElement(CompanyEventCard, null), 
+          React.createElement("br", null), 
+          React.createElement("div", {className: "panel panel-default", style: {boxShadow: "rgba(0, 0, 0, 0.0980392) 0px 1px 2px 1px",height:150}}, 
+            React.createElement("div", {className: "panel-body"}, 
+              "lol"
+            )
+          ), 
+          React.createElement("br", null), 
+          React.createElement("div", {className: "panel panel-default", style: {boxShadow: "rgba(0, 0, 0, 0.0980392) 0px 1px 2px 1px",height:150}}, 
+            React.createElement("div", {className: "panel-body"}, 
+              "lol"
+            )
+          )
+        )
+    )
+  }
+})
+
+var ContactCard = React.createClass({displayName: 'ContactCard',
+    render: function() {
+        return (
+              React.createElement("div", null, 
+              React.createElement("img", {src: "images/user.png", 
+                   style: {height:30,width:30,borderRadius:20,float:"left",marginLeft:20,marginRight:15}}), 
+                React.createElement("h5", {style: {fontWeight:600,marginBottom:5}}, "Robin Singh"), 
+                React.createElement("h6", {style: {marginTop:5}}, "Founder at Customero"), 
+    
+              React.createElement("hr", {style: {marginLeft:20,marginRight:20,color:"black",backgroundColor:"rgba(255,255,255,0.1)",opacity:"0.3",marginTop:10,marginBottom:10}})
+              )
+      )
+    }
+})
+
+var CompanyEventCard = React.createClass({displayName: 'CompanyEventCard',
+  render: function() {
+    return (
+      React.createElement("div", {style: {backgroundColor:"rgba(255,255,255,0.4)",borderRadius:4,border:"1px solid rgba(255,255,255,0.4)"}}, 
+      React.createElement("div", {className: "panel panel-default", style: {boxShadow: "rgba(0, 0, 0, 0.0980392) 0px 5px 2px 1px",height:150,backgroundColor:"rgba(255,255,255,0.9)",border:"none"}}, 
+        React.createElement("div", {className: "panel-body"}, 
+          "Example Event", 
+              React.createElement("img", {src: "images/user.png", 
+                   style: {height:30,width:30,borderRadius:20,float:"left",marginRight:15}})
+        )
+      ), 
+        "card", 
+        React.createElement("br", null)
+      )
+
+    )
+  }
+})
+
+var ContactDetail = React.createClass({displayName: 'ContactDetail',
+  render: function() {
+    return (
+      React.createElement("div", {style: {color:"white"}}, 
+        React.createElement("br", null), 
+        React.createElement("img", {src: "images/user.png", 
+             style: {height:100,width:100,borderRadius:5,marginRight:15,border:"2px solid white",float:"left"}}), 
+          React.createElement("h3", null, "Robin Singh"), 
+          React.createElement("h5", null, "Founder, Customero"), 
+        React.createElement("hr", {style: {marginTop:50}}), 
+        React.createElement("div", {className: "col-md-4", style: {borderRight:"1px solid white"}}, 
+          React.createElement("i", {className: "fa fa-twitter"}), "   Twitter", 
+          React.createElement("hr", null), 
+          React.createElement("i", {className: "fa fa-facebook"}), "   Facebook", 
+          React.createElement("hr", null), 
+          React.createElement("i", {className: "fa fa-linkedin"}), "   Linkedin", 
+          React.createElement("hr", null), 
+          React.createElement("i", {className: "fa fa-square-o"}), "   Glassdoor"
+        ), 
+        React.createElement("div", {className: "col-md-4", style: {borderRight:"1px solid white"}}, 
+          React.createElement("i", {className: "fa fa-newspaper-o"}), "   News Mentions", 
+          React.createElement("hr", null), 
+          React.createElement("i", {className: "fa fa-rss"}), "   Blog Posts", 
+          React.createElement("hr", null), 
+          React.createElement("i", {className: "fa fa-bullhorn"}), "   Press Releases", 
+          React.createElement("hr", null), 
+          React.createElement("i", {className: "fa fa-suitcase"}), "   Jobs", 
+          React.createElement("hr", null), 
+          React.createElement("i", {className: "fa fa-wrench"}), "   Technology"
+        ), 
+        React.createElement("div", {className: "col-md-4"}, 
+          React.createElement("div", {style: {textAlign:"center"}}, 
+          React.createElement("h5", {style: {fontWeight:"bold"}}, 
+            React.createElement("i", {className: "fa fa-clock-o"}), "  " + ' ' +
+            "TIMELINE ")
+          ), 
+          React.createElement("hr", null)
+
+        )
+      )
+    )
+  }
+})
+
+var CompanyDetail = React.createClass({displayName: 'CompanyDetail',
+  render: function() {
+    return (
+      React.createElement("div", null, 
+        "Company Detail"
+      )
+    )
+  }
+})
+
 var Contacts = React.createClass({displayName: 'Contacts',
   render: function() {
     return (
       React.createElement("div", null, 
         React.createElement("div", {className: "row"}, 
           React.createElement("div", {className: ""}, 
-            React.createElement("div", {style: {width:250,height:"100%",backgroundColor:"rgba(255,255,255,0.3)",position:"absolute",left:0, boxShadow: "rgba(0, 0, 0, 0.0980392) 0px 1px 2px 1px"}}, 
-              "lol"
+            React.createElement("div", {style: {width:250,height:"100%",backgroundColor:"rgba(255,255,255,0.3)",position:"absolute",left:0, boxShadow: "rgba(0, 0, 0, 0.0980392) 0px 1px 2px 1px",fontWeight:800,color:"white"}}, 
+              React.createElement("br", null), 
+              React.createElement("div", {style: {textAlign:"center"}}, " CONTACTS "), 
+              React.createElement("hr", {style: {marginLeft:20,marginRight:20}}), 
+              React.createElement(ContactCard, null), 
+              React.createElement(ContactCard, null), 
+              React.createElement(ContactCard, null)
+
             )
           ), 
-          React.createElement("div", {className: "", style: {marginLeft:350,marginRight:100}}, 
-            React.createElement("br", null), 
-            React.createElement("div", {className: "panel panel-default", style: {boxShadow: "rgba(0, 0, 0, 0.0980392) 0px 1px 2px 1px",height:150}}, 
-              React.createElement("div", {className: "panel-body"}, 
-                "lol"
-              )
-            ), 
-            React.createElement("br", null), 
-            React.createElement("div", {className: "panel panel-default", style: {boxShadow: "rgba(0, 0, 0, 0.0980392) 0px 1px 2px 1px",height:150}}, 
-              React.createElement("div", {className: "panel-body"}, 
-                "lol"
-              )
-            ), 
-            React.createElement("br", null), 
-            React.createElement("div", {className: "panel panel-default", style: {boxShadow: "rgba(0, 0, 0, 0.0980392) 0px 1px 2px 1px",height:150}}, 
-              React.createElement("div", {className: "panel-body"}, 
-                "lol"
-              )
-            )
+          React.createElement("div", {style: {marginLeft:200}}, 
+            React.createElement(Feed, null)
           )
-          
         )
-
       )
     )
   }
@@ -1075,10 +1317,20 @@ var Contacts = React.createClass({displayName: 'Contacts',
 
 // declare our routes and their hierarchy
 var routes = (
-  React.createElement(Route, {handler: App}, 
-    React.createElement(Route, {path: "", handler: Main}), 
-    React.createElement(Route, {path: "lookup", handler: Lookup}), 
-    React.createElement(Route, {path: "contacts", handler: Contacts})
+  React.createElement(Route, null, 
+    React.createElement(Route, {path: "/", handler: App}, 
+      React.createElement(Route, {path: "", handler: LandingPage}), 
+      React.createElement(Route, {path: "login", handler: Login}), 
+      React.createElement(Route, {path: "signup", handler: Signup}), 
+      React.createElement(Route, {path: "pricing", handler: Pricing})
+    ), 
+
+    React.createElement(Route, {path: "app", handler: AuthenticatedApp}, 
+      React.createElement(Route, {path: "", handler: Feed}), 
+      React.createElement(Route, {path: "contacts", handler: Contacts}), 
+      React.createElement(Route, {path: "/detail/:email", handler: ContactDetail}), 
+      React.createElement(Route, {path: "/detail/:domain", handler: CompanyDetail})
+    )
   )
 );
 
@@ -1104,6 +1356,89 @@ var SearchBar = React.createClass({displayName: 'SearchBar',
 })
 
 module.exports = SearchBar
+
+});
+
+;require.register("sidebar", function(exports, require, module) {
+var Sidebar = React.createClass({displayName: 'Sidebar',
+  render: function() {
+    return (
+          React.createElement("div", {className: "col-xs-5 col-sm-3 col-md-3", style: {borderRight:"1px solid #eee",boxShadow: "rgba(0, 0, 0, 0.1980392) 0px -6px 10px 1px",position:"relative",marginRight:20,zIndex:100}}, 
+              React.createElement("br", null), 
+              React.createElement("div", {style: {fontWeight:800, fontSize:24,color:"#FFBB01",marginLeft:20}}, 
+                React.createElement("div", {style: {backgroundColor:"#FFBB01", display:"inline",width:20,height:20,borderRadius:20,display:"none"}}, 
+                React.createElement("i", {className: "fa fa-bolt", style: {color:"white",fontSize:12}})
+                ), 
+                "ClearSpark"), 
+
+              React.createElement("hr", null), 
+            React.createElement("ul", {style: {paddingLeft:0}}, 
+              React.createElement("li", null, 
+                React.createElement("h4", null, "INBOX", 
+                React.createElement("a", {href: "javascript:", className: "btn btn-success btn-xs", style: {float:"right"}}, " ", React.createElement("i", {className: "fa fa-plus"}))
+)), " ", React.createElement("hr", null), 
+              React.createElement("li", null, React.createElement("h4", null, "CALENDAR", 
+                React.createElement("a", {href: "javascript:", className: "btn btn-success btn-xs", style: {float:"right"}}, " ", React.createElement("i", {className: "fa fa-plus"}))
+)), " ", React.createElement("hr", null), 
+              React.createElement("li", null, React.createElement("h4", null, "CRM", 
+                React.createElement("a", {href: "javascript:", className: "btn btn-success btn-xs", style: {float:"right"}}, " ", React.createElement("i", {className: "fa fa-plus"}))
+)), " ", React.createElement("hr", null), 
+              React.createElement("li", null, "CONTACTS  ", 
+                React.createElement("a", {href: "javascript:", className: "btn btn-success btn-xs", style: {float:"right"}}, " ", React.createElement("i", {className: "fa fa-plus"}))
+              ), 
+              React.createElement("hr", null), 
+
+              React.createElement("li", null, "LISTS   "), 
+              React.createElement("br", null), 
+            
+                React.createElement("h5", null, React.createElement("i", {className: "fa fa-list", style: {fontSize:10}}), "  List One"), 
+                React.createElement("h5", null, React.createElement("i", {className: "fa fa-list", style: {fontSize:10}}), "  List One"), 
+              React.createElement("li", null, React.createElement("a", {href: "javascript:", className: "btn btn-success btn-xs"}, React.createElement("i", {className: "fa fa-plus"}), "   ADD LIST")), 
+              React.createElement("hr", null), 
+
+              React.createElement("div", {style: {display:"none"}}, 
+              React.createElement("li", null, "ACCOUNT"), 
+              React.createElement("hr", null), 
+              React.createElement("li", null, "API KEYS"), 
+              React.createElement("hr", null), 
+              React.createElement("li", null, "LOGS"), 
+              React.createElement("hr", null), 
+              React.createElement("br", null), 
+              React.createElement("li", null, "Get Started"), 
+              React.createElement("li", null, "Api Docs"), 
+              React.createElement("li", null, "Support"), 
+              React.createElement("li", null, "Logout")
+              )
+            )
+          )
+    )
+  }
+})
+
+module.exports = Sidebar
+
+});
+
+;require.register("signup", function(exports, require, module) {
+var Signup = React.createClass({displayName: 'Signup',
+  render: function() {
+    return (
+      React.createElement("div", {style: {textAlign:"center",paddingTop:120}}, 
+
+          React.createElement("img", {src: "images/radar_2.png", style: {height:100}}), 
+          React.createElement("br", null), 
+        React.createElement("input", {className: "form-control input-lg", style: {fontSize:16, marginRight:"auto",marginLeft:"auto",marginTop:30,width:300,borderRadius:2}, placeholder: "EMAIL"}), 
+        React.createElement("input", {className: "form-control input-lg", style: {fontSize:16, marginTop:10,marginLeft:"auto",marginRight:"auto",width:300,borderRadius:2}, placeholder: "PASSWORD", type: "password"}), 
+        React.createElement("input", {className: "form-control input-lg", style: {fontSize:16, marginTop:10,marginLeft:"auto",marginRight:"auto",width:300,borderRadius:2}, placeholder: "CONFIRM PASSWORD", type: "password"}), 
+        React.createElement("br", null), 
+        React.createElement("a", {className: "btn btn-lg btn-success", style: {marginTop:10,width:300, fontSize:16}}, "SIGN UP")
+
+      )
+    )
+  }
+})
+
+module.exports = Signup
 
 });
 

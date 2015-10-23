@@ -22,6 +22,12 @@ high_q = Queue("high", connection=_conn)
 @gen.coroutine
 def company_event_changes():
     rethink_conn = yield r.connect(db="clearspark")
+    feed = yield r.table('events').changes().run(rethink_conn)
+        """ """
+
+@gen.coroutine
+def company_event_changes():
+    rethink_conn = yield r.connect(db="clearspark")
     feed = yield r.table('company_events').changes().run(rethink_conn)
     while (yield feed.fetch_next()):
         change = yield feed.next()

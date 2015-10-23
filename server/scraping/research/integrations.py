@@ -15,93 +15,42 @@ messages = ns.messages.where(**{'from': 'robin@robinsingh.co'})
 msg = messages.all()
 sent = pd.DataFrame(pd.DataFrame([dict(i) for i in msg]).to.sum()).email.drop_duplicates().tolist()
 
-
-# In[ ]:
-
 ms = ns.messages.all()
-
-# In[47]:
 
 ct = ns.contacts.all()
 cl = ns.calendars.all()
 ev = ns.events.all()
 
-
-# In[92]:
-
 ct = pd.DataFrame([dict(i) for i in ct])
 cl = pd.DataFrame([dict(i) for i in cl])
 ev = pd.DataFrame([dict(i) for i in ev])
-
-
-# In[ ]:
-
-# persist to json / rethinkdb
-
-
-# In[ ]:
 
 # get contacts
 # get number of messages with each contact
 # get number of threads with each contact
 # get number of events / meetings with each contact
 
-
-# In[36]:
-
 thread_ids = pd.Series([i["thread_id"] for i in msg]).unique()
 threads = [ns.threads.find(i) for i in thread_ids]
 
-
-# In[ ]:
-
 contact_meetings = pd.DataFrame(ev.participants.dropna().sum()).email.value_counts()
-
-
-# In[104]:
-
 threads = [dict(i) for i in threads]
-
-
-# In[112]:
 
 contact_msgs = pd.DataFrame(pd.DataFrame(threads).participants.dropna().sum()).email.value_counts()
 
+class EmailIntegration:
+    def get_messages(self):
+        """ """
 
-# In[42]:
-
-
-
-
-# In[ ]:
-
-
-
-
-# In[ ]:
+    def get_messsages(self):
+        """ """
 
 # Email Sent But Got No Response - (1)
-
-
-# In[ ]:
-
 # Emails Awaiting Response From You - Small Threads (2)
-
-
-# In[ ]:
-
 # Emails Awaiting Response From You - Long Threads (>2)
 
-
-# In[ ]:
-
 # Threads that might need a followup (you sent but never got back) - Small Threads (>3)
-
-
-# In[ ]:
-
 # Which threads to ignore?
-
 
 from textblob import TextBlob
 import pattern
@@ -115,5 +64,3 @@ from sklearn import datasets
 # email in thread
 # importance of email in thread
 # last email message
-
-

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="250px" height="429px" viewBox="0 0 250 429" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <!-- Generator: Sketch 3.3.3 (12072) - http://www.bohemiancoding.com/sketch -->
+    <title>Group Copy</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="Group-Copy" sketch:type="MSLayerGroup" transform="translate(-1.000000, 0.823529)" fill="#000000">
+            <path d="M248.539216,75.7921569 C246.570588,72.8392157 243.617647,70.8705882 240.172549,70.8705882 L10.827451,70.3784314 C7.38235294,70.3784314 3.9372549,72.3470588 2.46078431,75.3 C0.492156863,78.2529412 0.492156863,81.6980392 2.46078431,85.1431373 C50.6921569,174.715686 95.9705882,349.431373 96.4627451,351.4 L97.4470588,355.337255 L154.045098,355.337255 L155.029412,351.892157 C155.521569,349.923529 202.768627,174.715686 249.031373,86.6196078 C250.507843,82.1901961 250.507843,78.745098 248.539216,75.7921569 L248.539216,75.7921569 Z M146.170588,344.509804 L104.337255,344.509804 C97.4470588,318.42549 55.1215686,163.396078 10.3352941,80.2215686 L239.680392,80.7137255 C196.862745,162.903922 153.552941,318.917647 146.170588,344.509804 L146.170588,344.509804 Z" id="Shape" sketch:type="MSShapeGroup"></path>
+            <circle id="Oval" sketch:type="MSShapeGroup" cx="219.994118" cy="52.1686275" r="5.90588235"></circle>
+            <circle id="Oval" sketch:type="MSShapeGroup" cx="164.872549" cy="5.90588235" r="5.41372549"></circle>
+            <circle id="Oval" sketch:type="MSShapeGroup" cx="119.101961" cy="376.5" r="4.92156863"></circle>
+            <circle id="Oval" sketch:type="MSShapeGroup" cx="132.882353" cy="423.254902" r="4.92156863"></circle>
+            <circle id="Oval" sketch:type="MSShapeGroup" cx="15.7490196" cy="46.2627451" r="8.36666667"></circle>
+            <circle id="Oval" sketch:type="MSShapeGroup" cx="131.405882" cy="354.352941" r="4.92156863"></circle>
+            <circle id="Oval" sketch:type="MSShapeGroup" cx="50.2" cy="51.1843137" r="5.90588235"></circle>
+            <circle id="Oval" sketch:type="MSShapeGroup" cx="93.0176471" cy="25.1" r="11.8117647"></circle>
+            <circle id="Oval" sketch:type="MSShapeGroup" cx="41.8333333" cy="4.92156863" r="4.92156863"></circle>
+            <ellipse id="Oval" sketch:type="MSShapeGroup" cx="156.505882" cy="65.9490196" rx="7.8745098" ry="7.8745098"></ellipse>
+            <circle id="Oval" sketch:type="MSShapeGroup" cx="181.605882" cy="36.9117647" r="8.85882353"></circle>
+            <circle id="Oval" sketch:type="MSShapeGroup" cx="137.803922" cy="35.4352941" r="4.92156863"></circle>
+            <circle id="Oval-Copy-16" sketch:type="MSShapeGroup" cx="76.2843137" cy="163.888235" r="8.36666667"></circle>
+            <circle id="Oval-Copy-9" sketch:type="MSShapeGroup" cx="101.384314" cy="193.909804" r="4.92156863"></circle>
+            <circle id="Oval-Copy-10" sketch:type="MSShapeGroup" cx="162.411765" cy="176.192157" r="4.92156863"></circle>
+            <circle id="Oval-Copy-11" sketch:type="MSShapeGroup" cx="101.384314" cy="228.360784" r="4.92156863"></circle>
+            <circle id="Oval-Copy-12" sketch:type="MSShapeGroup" cx="130.421569" cy="190.464706" r="8.36666667"></circle>
+            <circle id="Oval-Copy-13" sketch:type="MSShapeGroup" cx="135.835294" cy="264.288235" r="4.92156863"></circle>
+            <circle id="Oval-Copy-14" sketch:type="MSShapeGroup" cx="118.609804" cy="307.105882" r="4.92156863"></circle>
+            <circle id="Oval-Copy-15" sketch:type="MSShapeGroup" cx="138.296078" cy="155.521569" r="4.92156863"></circle>
+            <ellipse id="Oval" sketch:type="MSShapeGroup" cx="102.368627" cy="70.8705882" rx="7.8745098" ry="7.8745098"></ellipse>
+            <ellipse id="Oval" sketch:type="MSShapeGroup" cx="219.994118" cy="19.1941176" rx="7.8745098" ry="7.8745098"></ellipse>
+        </g>
+    </g>
+</svg>

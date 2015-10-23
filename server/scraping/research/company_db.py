@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup
+import rethinkdb as r
 import requests
 from google import Google
 from google import Crawlera
@@ -12,6 +13,8 @@ import pandas as pd
 import calendar
 import sys
 import arrow
+
+conn = r.connect(db="clearspark")
 
 class Helper:
   def _str_to_timestamp(self, _date):
@@ -107,11 +110,31 @@ class GlassDoor:
             CompanyInfoCrawl()._persist(val, "glassdoor", api_key)
             break
 
+    def _all_reviews(self, domain, api_key="", name=""):
+        """ """
+
+    def _events(self, domain, api_key="", name=""):
+        reviews = self._reviews(domain)
+        if reviews:
+            reviews["event_type"] = "GlassdoorReview"
+            data = data.applymap(lambda x: self._remove_non_ascii(x))
+            data["event_key"] = ["".join(map(str, _data.values()))[:124]
+                                 for _data in data.to_dict("r")]
+            r.table("events").insert(reviews.to_dict("r")).run(conn)
+            #return reviews
+        else:
+            """ return reviews """
+
     def _reviews(self, domain, api_key="", name=""):
         df = Google().search('site:glassdoor.com/reviews {0}'.format(name))
         if df.empty: return
         url = df.ix[0].link
-        r = BeautifulSoup(Google().cache(url))
+        r = BeautifulSoup(Crawlera().get(url).text)
+        if not r.find("a",{"class":"sortByDate"}): return
+        url = "http://glassdoor.com"+r.find("a",{"class":"sortByDate"})["href"]
+        print url
+        r = requests.get("http://localhost:8950/render.html?url={0}".format(url))
+        r = BeautifulSoup(r.text)
         rating = r.find('div',{'class':'ratingNum'})
         rating = rating.text if rating else ""
         # TODO - awards
@@ -128,10 +151,7 @@ class GlassDoor:
             data = dict(zip(cols, vals))
             data["timestamp"] = Helper()._str_to_timestamp(data["date"])
             reviews = reviews.append(data,ignore_index=True) 
-        data = {'data': reviews.to_dict('r'), 'company_name':name}
-        data['api_key'] = api_key
-        data['domain'] = domain
-        CompanyExtraInfoCrawl()._persist(data, "glassdoor_reviews", api_key) 
+        return reviews
 
     def _html_to_dict(self, url):
         r = BeautifulSoup(Google().cache(url))
@@ -446,7 +466,10 @@ class Yelp:
             break
 
     def _remove_non_ascii(self, text):
-        return ''.join(i for i in text if ord(i)<128)
+        try:
+            return ''.join(i for i in text if ord(i)<128)
+        except:
+            return text
 
     def _html_to_dict(self, url):
         r = Crawlera().get(url).text
@@ -612,7 +635,7 @@ class Indeed:
 
         for row in soup.findAll('div',{'class':'row'}):
             job_title = row.find(attrs={'class':'jobtitle'}).text.strip() if row.find(attrs={'class':'jobtitle'}) else ""
-            company = row.find('span',{'class':'company'}).text if row.find('span',{'class':'company'}) else ""
+            company = row.find('span',{'class':'company'}).text.strip() if row.find('span',{'class':'company'}) else ""
             location = row.find('span',{'class':'location'}).text if row.findAll('span',{'class':'location'}) else ""
             date = row.find('span',{'class':'date'}).text if row.findAll('span',{'class':'date'}) else ""
             summary = row.find('span',{'class':'summary'}).text.strip() if row.findAll('span',{'class':'summary'}) else ""

@@ -4,7 +4,7 @@
 # - Docker Actions that change rarely should be combined to reduce layers,
 #     which speeds up deploy times (e.g. setting ENV VARS)
 
-FROM picobit/triggeriq-base:latest
+FROM picobit/clearspark-base:latest
 
 # ENV VARS are loaded in a single line to reduce number of images
 
