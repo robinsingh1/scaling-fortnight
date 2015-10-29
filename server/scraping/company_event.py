@@ -39,20 +39,22 @@ class CompanyEventCron:
                   "keywords":a.keywords,
                   "text":a.text}
         # update
-        conn = r.connect(db="clearspark")
+        #conn = r.connect(db="clearspark")
+        conn = r.connect(**rethink_conn.conn())
         #
 
     def _start(self):
-        rethink_conn = r.connect(db="clearspark")
+        #rethink_conn = r.connect(db="clearspark")
+        conn = r.connect(**rethink_conn.conn())
         #contacts = list(r.table("user_contacts").run(conn))
         #if pd.DataFrame(contacts).empty:
         #    print "NO USER CONTACTS"
         #    return 
 
         #contacts = pd.DataFrame(contacts).drop_duplicates("domain")
-        cos = r.table("companies").run(rethink_conn)
+        cos = r.table("companies").run(conn)
         cos = pd.DataFrame(list(cos))
-        peeps = r.table("user_social_profiles").run(rethink_conn)
+        peeps = r.table("user_social_profiles").run(conn)
         peeps = pd.DataFrame(list(peeps))
         handles = cos.handles.dropna().sum() + peeps.handles.dropna().sum()
         print len(handles)
@@ -70,18 +72,18 @@ class CompanyEventCron:
 
             for handle in c.handles:
                 if "twitter" in handle:
-                    q.enqueue(Twitter()._events, handle)
+                    q.enqueue(Twitter()._events, handle, domain)
                 elif "facebook" in handle:
-                    q.enqueue(Facebook()._events, handle)
+                    q.enqueue(Facebook()._events, handle, domain)
                 elif "linkedin" in handle:
-                    q.enqueue(Linkedin()._events, handle)
+                    q.enqueue(Linkedin()._events, handle, domain)
 
         for i, p in peeps.iterrows():
             if type(p.handles) is float: break
             for handle in p.handles:
                 if "twitter" in handle:
-                    q.enqueue(Twitter()._events, handle)
+                    q.enqueue(Twitter()._events, handle, domain)
                 elif "facebook" in handle:
-                    q.enqueue(Facebook()._events, handle)
+                    q.enqueue(Facebook()._events, handle, domain)
                 elif "linkedin" in handle:
-                    q.enqueue(Linkedin()._events, handle)
+                    q.enqueue(Linkedin()._events, handle, domain)

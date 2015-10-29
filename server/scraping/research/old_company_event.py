@@ -209,7 +209,8 @@ class OldCompanyEventCron:
                 '''
 
     def _start(self):
-        conn = r.connect(db="clearspark")
+        #conn = r.connect(db="clearspark")
+        conn = r.connect(**rethink_conn.conn())
         contacts = list(r.table("user_contacts").run(conn))
         contacts = pd.DataFrame(contacts).drop_duplicates("domain")
         for i, c in contacts.iterrows():

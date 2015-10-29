@@ -9,8 +9,10 @@ from bs4 import BeautifulSoup
 from crawl import CompanyInfoCrawl, CompanyExtraInfoCrawl
 import tldextract
 import rethinkdb as r
+import rethink_conn
 
-conn = r.connect(db="clearspark")
+#conn = r.connect(db="clearspark")
+conn = r.connect(**rethink_conn.conn())
 
 #return google_results
 auth = requests.auth.HTTPProxyAuth('robinsingh', '951562nileppez')
@@ -46,10 +48,11 @@ class Twitter:
         except:
             return text
 
-    def _events(self, domain, api_key="", name=""):
-        html = Crawlera().get(domain).text
+    def _events(self, handle, domain=None):
+        html = Crawlera().get(handle).text
         data = self._tweets(html)
         data["event_type"] = "TweetEvent"
+        data["link"] = handle
         data["domain"] = domain
         data = data.applymap(lambda x: self._remove_non_ascii(x))
         data["event_key"] = ["".join(map(str, _data.values()))[:124]
@@ -160,7 +163,7 @@ class Facebook:
             posts.append(_post)
         return pd.DataFrame(posts)
 
-    def _events(self, url, api_key="", name=""):
+    def _events(self, url, domain=None):
         #url = "https://facebook.com/guidespark"
         url = 'http://webcache.googleusercontent.com/search?q=cache:'+url
         url = CRAWLERA_URL + urllib.urlencode({'url':url})
@@ -169,6 +172,7 @@ class Facebook:
         html = requests.get(url).text
         data = self._posts(html)
         data["url"] = url
+        data["domain"] = domain
         data["event_type"] = "FacebookEvent"
         data = data.applymap(lambda x: self._remove_non_ascii(x))
         data["event_key"] = ["".join(map(str, _data.values()))[:124]

@@ -29,7 +29,7 @@ high_q = Queue("high", connection=_conn)
 
 app = Flask(__name__, static_url_path="", static_folder="client")
 app.debug = True
-sentry = Sentry(app, dsn='https://9ec1f6b3912344ebbab7a7b831048c73:a8582bbaec804a118772dc892885fef2@app.getsentry.com/55642')
+sentry = Sentry(app, dsn='https://6ede62e4646546e38a4d79ac88812ca5:29843b37aec14df6ba5d0597a66e3e48@app.getsentry.com/55648')
 handle_exceptions(app)
 
 bugsnag.notify(Exception("Test Error"))
@@ -48,17 +48,36 @@ def test_cron():
 @app.route("/contacts")
 #TODO requires authentication
 def user_contacts():
-    conn = r.connect(db="clearspark")
-    l = list(r.table("user_social_profiles").run(conn))
-    data = [i["person"] for i in l if "person" in i.keys()]
+    conn = r.connect(**rethink_conn.conn())
+    data = list(r.table("user_social_profiles").run(conn))
     return make_response(json.dumps(data))
 
 @app.route("/events")
 def company_events():
-    conn = r.connect(db="clearspark")
-    ev = pd.DataFrame(list(r.table("events").run(conn)))
-    ev = ev.drop_duplicates("event_type")
+    conn = r.connect(**rethink_conn.conn())
+    ev = pd.DataFrame(list(r.table("events").limit(30).run(conn)))
+    ev = ev.sort("timestamp", ascending=False)
+    #ev = ev.drop_duplicates("event_type")
     data = [row.dropna().to_dict() for i, row in ev.iterrows()]
+    return make_response(json.dumps(data))
+
+@app.route("/events/<domain>")
+def get_domain_events(domain):
+    conn = r.connect(**rethink_conn.conn())
+    data = list(r.table("events").filter({"domain":domain}).run(conn))
+    return make_response(json.dumps(data))
+
+@app.route("/contacts/<domain>")
+def get_contact(domain):
+    conn = r.connect(**rethink_conn.conn())
+    data = list(r.table("user_social_profiles").filter({"company_domain":domain}).run(conn))
+    return make_response(json.dumps(data))
+
+@app.route("/company/<domain>")
+def get_company(domain):
+    conn = r.connect(**rethink_conn.conn())
+    data = list(r.table("companies").filter({"domain":domain}).run(conn))
+    data = data[0] if data else {}
     return make_response(json.dumps(data))
 
 @app.route("/feed/<user_id>")
@@ -66,7 +85,7 @@ def user_feed(user_id):
     # TODO paginate
     key = "user:#{0}".format(user_id)
     feed = redis.zquery(key, 0, 20)
-    conn = r.connect(db="clearspark")
+    conn = r.connect(**rethink_conn.conn())
     events = r.table("company_events").get_all(r.args(feed)).run(conn)
     return make_response(json.dumps(events))
 

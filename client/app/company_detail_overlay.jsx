@@ -9,6 +9,21 @@ var CompanyDetailOverlay = React.createClass({
     console.log(b)
   },
 
+  componentDidMount: function() {
+    var _this = this;
+    $.ajax({
+      url:location.origin+"/events/",
+      dataType:"json",
+      success: function(res) {
+        console.log(res)
+        _this.setState({contacts: res})
+      },
+      error: function(err) {
+        console.log(err)
+      }
+    })
+  },
+
   render: function() {
     console.log(this.props)
     company = (this.props.company.trigger) ? this.props.company.trigger : {}

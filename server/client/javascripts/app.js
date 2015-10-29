@@ -235,6 +235,193 @@ module.exports = CompanyCard
 
 });
 
+;require.register("company_detail", function(exports, require, module) {
+var CompanyDetail = React.createClass({displayName: 'CompanyDetail',
+  getInitialState: function() {
+    return {
+      blogEvent: [],
+      newsEvent: [],
+      pressEvent: [],
+      tweetEvent: [],
+      linkedinEvent: [],
+      facebookEvent: [],
+      hiringEvent: [],
+    }
+  },
+
+  componentDidMount: function() {
+    $.ajax({
+      url:location.origin+"/company/"+this.props.params.domain,
+      dataType:"json",
+      success: function(res) {
+        console.log(res)
+      },
+      error: function(err) {
+        console.log(err)
+      },
+    })
+
+    var _this = this;
+    $.ajax({
+      url:location.origin+"/events/"+this.props.params.domain,
+      dataType:"json",
+      success: function(res) {
+        console.log(res)
+        _this.setState({blogEvent: _.where(res, {event_type: "CompanyBlogEvent"})})
+        _this.setState({newsEvent: _.where(res, {event_type: "CompanyNewsEvent"})})
+        _this.setState({pressEvent: _.where(res, {event_type: "CompanyPressEvent"})})
+        _this.setState({tweetEvent: _.where(res, {event_type: "TweetEvent"})})
+        _this.setState({linkedinEvent: _.where(res, {event_type: "LinkedinEvent"})})
+        _this.setState({facebookEvent: _.where(res, {event_type: "FacebookEvent"})})
+        _this.setState({hiringEvent: _.where(res, {event_type: "HiringEvent"})})
+      },
+      error: function(err) {
+        console.log(err)
+      },
+    })
+  },
+
+  render: function() {
+    console.log(this.state)
+    return (
+      React.createElement("div", {style: {color:"white"}}, 
+        React.createElement("br", null), 
+        React.createElement("img", {src: "images/user.png", 
+             style: {height:100,width:100,borderRadius:5,marginRight:15,border:"2px solid white",float:"left"}}), 
+          React.createElement("h3", null, "Robin Singh"), 
+          React.createElement("h5", null, "Founder, Customero"), 
+        React.createElement("hr", {style: {marginTop:50}}), 
+        React.createElement("div", {className: "col-md-4", style: {borderRight:"1px solid white"}}, 
+          React.createElement("i", {className: "fa fa-twitter"}), "   Twitter", 
+          React.createElement("hr", null), 
+          React.createElement("i", {className: "fa fa-facebook"}), "   Facebook", 
+          React.createElement("hr", null), 
+          React.createElement("i", {className: "fa fa-linkedin"}), "   Linkedin", 
+          React.createElement("hr", null), 
+          React.createElement("i", {className: "fa fa-square-o"}), "   Glassdoor"
+        ), 
+        React.createElement("div", {className: "col-md-4", style: {borderRight:"1px solid white"}}, 
+          React.createElement("i", {className: "fa fa-newspaper-o"}), "   News Mentions (", this.state.newsEvent.length, ")", 
+          React.createElement("div", {style: {height:200,overflow:"auto",marginTop:10}}, 
+          _.map(this.state.newsEvent, function(event) {
+              return React.createElement(CompanyNewsEventContent, {event: event})
+           })
+          
+          ), 
+          React.createElement("hr", null), 
+          React.createElement("i", {className: "fa fa-rss"}), "   Blog Posts (", this.state.blogEvent.length, ")", 
+          React.createElement("div", {style: {height:200,overflow:"auto",marginTop:10}}, 
+          _.map(this.state.blogEvent, function(event) {
+              return React.createElement(CompanyBlogEventContent, {event: event})
+           })
+          
+          ), 
+          React.createElement("hr", null), 
+          React.createElement("i", {className: "fa fa-bullhorn"}), "   Press Releases", 
+          React.createElement("hr", null), 
+          React.createElement("i", {className: "fa fa-suitcase"}), "   Jobs (", this.state.hiringEvent.length, ")", 
+          React.createElement("div", {style: {height:200,overflow:"auto",marginTop:10}}, 
+          _.map(this.state.hiringEvent, function(event) {
+              return React.createElement(CompanyHiringEventContent, {event: event})
+           })
+          
+          ), 
+          React.createElement("hr", null), 
+          React.createElement("i", {className: "fa fa-wrench"}), "   Technology"
+        ), 
+        React.createElement("div", {className: "col-md-4"}, 
+          React.createElement("div", {style: {textAlign:"center"}}, 
+          React.createElement("h5", {style: {fontWeight:"bold"}}, 
+            React.createElement("i", {className: "fa fa-clock-o"}), "  " + ' ' +
+            "TIMELINE ")
+          ), 
+          React.createElement("hr", null)
+
+        )
+      )
+    )
+  }
+})
+
+module.exports = CompanyDetail
+
+var CompanyBlogEventContent = React.createClass({displayName: 'CompanyBlogEventContent',
+  render: function() {
+    return (
+      React.createElement("div", null, 
+          React.createElement("h5", {style: {fontWeight:"bold"}}, this.props.event.link_text), 
+          React.createElement("h6", null, this.props.event.link_span)
+      )
+    )
+  }
+})
+
+var CompanyNewsEventContent = React.createClass({displayName: 'CompanyNewsEventContent',
+  render: function() {
+    return (
+      React.createElement("div", null, 
+        React.createElement("h5", {style: {fontWeight:"bold"}}, this.props.event.title), 
+        React.createElement("h6", null, this.props.event.source)
+      )
+    )
+  }
+})
+
+var CompanyPressEventContent = React.createClass({displayName: 'CompanyPressEventContent',
+  render: function() {
+    return (
+      React.createElement("div", null, 
+          React.createElement("h5", {style: {fontWeight:"bold"}}, this.props.event.title), 
+          React.createElement("h5", null, this.props.event.description)
+      )
+    )
+  }
+})
+
+var CompanyHiringEventContent = React.createClass({displayName: 'CompanyHiringEventContent',
+  render: function() {
+    return (
+      React.createElement("div", null, 
+          React.createElement("h5", {style: {fontWeight:"bold"}}, this.props.event.job_title), 
+          React.createElement("h5", null, this.props.event.summary)
+      )
+    )
+  }
+})
+
+var FacebookEventContent = React.createClass({displayName: 'FacebookEventContent',
+  render: function() {
+    return (
+      React.createElement("div", null, 
+          React.createElement("h5", {style: {fontWeight:"bold"}}, this.props.event.link_title), 
+          React.createElement("h5", null, this.props.event.link_summary)
+      )
+    )
+  }
+})
+
+var TwitterEventContent = React.createClass({displayName: 'TwitterEventContent',
+  render: function() {
+    return (
+      React.createElement("div", null, 
+          React.createElement("h4", null, this.props.event.text)
+      )
+    )
+  }
+})
+
+var LinkedinEventContent = React.createClass({displayName: 'LinkedinEventContent',
+  render: function() {
+    return (
+      React.createElement("div", null, 
+          React.createElement("h4", null, this.props.event.post)
+      )
+    )
+  }
+})
+
+});
+
 ;require.register("company_detail_overlay", function(exports, require, module) {
 var CompanyDetailOverlay = React.createClass({displayName: 'CompanyDetailOverlay',
   toggleCompanyDetailOverlay: function() {
@@ -245,6 +432,21 @@ var CompanyDetailOverlay = React.createClass({displayName: 'CompanyDetailOverlay
   componentWillReceiveProps: function(a, b) {
     console.log(a)
     console.log(b)
+  },
+
+  componentDidMount: function() {
+    var _this = this;
+    $.ajax({
+      url:location.origin+"/events/",
+      dataType:"json",
+      success: function(res) {
+        console.log(res)
+        _this.setState({contacts: res})
+      },
+      error: function(err) {
+        console.log(err)
+      }
+    })
   },
 
   render: function() {
@@ -293,6 +495,55 @@ var UserPic = React.createClass({displayName: 'UserPic',
 
 
 module.exports = CompanyDetailOverlay
+
+});
+
+;require.register("contact_detail", function(exports, require, module) {
+var ContactDetail = React.createClass({displayName: 'ContactDetail',
+  render: function() {
+    return (
+      React.createElement("div", {style: {color:"white"}}, 
+        React.createElement("br", null), 
+        React.createElement("img", {src: "images/user.png", 
+             style: {height:100,width:100,borderRadius:5,marginRight:15,border:"2px solid white",float:"left"}}), 
+          React.createElement("h3", null, "Robin Singh"), 
+          React.createElement("h5", null, "Founder, Customero"), 
+        React.createElement("hr", {style: {marginTop:50}}), 
+        React.createElement("div", {className: "col-md-4", style: {borderRight:"1px solid white"}}, 
+          React.createElement("i", {className: "fa fa-twitter"}), "   Twitter", 
+          React.createElement("hr", null), 
+          React.createElement("i", {className: "fa fa-facebook"}), "   Facebook", 
+          React.createElement("hr", null), 
+          React.createElement("i", {className: "fa fa-linkedin"}), "   Linkedin", 
+          React.createElement("hr", null), 
+          React.createElement("i", {className: "fa fa-square-o"}), "   Glassdoor"
+        ), 
+        React.createElement("div", {className: "col-md-4", style: {borderRight:"1px solid white"}}, 
+          React.createElement("i", {className: "fa fa-newspaper-o"}), "   News Mentions", 
+          React.createElement("hr", null), 
+          React.createElement("i", {className: "fa fa-rss"}), "   Blog Posts", 
+          React.createElement("hr", null), 
+          React.createElement("i", {className: "fa fa-bullhorn"}), "   Press Releases", 
+          React.createElement("hr", null), 
+          React.createElement("i", {className: "fa fa-suitcase"}), "   Jobs", 
+          React.createElement("hr", null), 
+          React.createElement("i", {className: "fa fa-wrench"}), "   Technology"
+        ), 
+        React.createElement("div", {className: "col-md-4"}, 
+          React.createElement("div", {style: {textAlign:"center"}}, 
+          React.createElement("h5", {style: {fontWeight:"bold"}}, 
+            React.createElement("i", {className: "fa fa-clock-o"}), "  " + ' ' +
+            "TIMELINE ")
+          ), 
+          React.createElement("hr", null)
+
+        )
+      )
+    )
+  }
+})
+
+module.exports = ContactDetail
 
 });
 
@@ -418,6 +669,502 @@ var DatePair = React.createClass({displayName: 'DatePair',
 })
 
 module.exports = DatePair
+
+});
+
+;require.register("event_cards", function(exports, require, module) {
+var OverlayTrigger = ReactBootstrap.OverlayTrigger
+var Popover = ReactBootstrap.Popover
+var Button = ReactBootstrap.Button
+
+var UserPic = React.createClass({displayName: 'UserPic',
+  render: function() {
+    img = (this.props.img) ? this.props.img : "images/user.png"
+    return (
+      React.createElement("div", {className: this.props._class, style: {height:35,width:35,border:"2px solid white",oldBoxShadow:"0px 2px 4px 0px rgba(0,0,0,0.30)",backgroundImage:"url('"+img+"')",backgroundSize:"cover",borderRadius:25,display:"inline-block",marginLeft:-13,cursor:"pointer"}}, " ")
+    )
+
+  }
+})
+
+var CompanyDetailPopup = React.createClass({displayName: 'CompanyDetailPopup',
+  getInitialState: function() {
+    return {
+      blogEvent: [],
+      newsEvent: [],
+      pressEvent: [],
+      tweetEvent: [],
+      linkedinEvent: [],
+      facebookEvent: [],
+      hiringEvent: [],
+    }
+  },
+
+  render: function() {
+    c = this.props.company
+
+    bgImage = "https://unsplash.it/400/200?blur&random="+Math.random().toString(36).substring(7);
+      img = (c.logo) ? c.logo : "images/empty_company.png"
+    contacts = _.map(this.props.contacts, function(contact, i) {
+      //console.log(contact.avatar)
+      avatar = (contact.avatar) ? contact.avatar : "images/user.png"
+      return ( React.createElement("div", {style: {display:"inline-block",width:30,fontFamily:"proxima-nova",textAlign:"center"}}, 
+        React.createElement("div", {style: {height:25,width:25,border:"2px solid white",oldBoxShadow:"0px 2px 4px 0px rgba(0,0,0,0.30)",backgroundImage:"url('"+avatar+"')",backgroundSize:"cover",borderRadius:25,display:"inline-block",cursor:"pointer"}}, " "), 
+        React.createElement("div", {style: {display:"block",textAlign:"center",display:"none"}}, 
+          contact.name.givenName
+        ))
+      )
+    })
+    event_icons = ["fa fa-rss", "fa fa-newspaper-o","fa fa-bullhorn", 
+                   "fa fa-twitter", "fa fa-linkedin","fa-facebook","fa fa-suitcase"]
+    return (
+      React.createElement("div", {className: "panel panel-default", style: {width:400,height:"auto"}}, 
+        React.createElement("div", {className: "panel-body", style: {textAlign:"center"}}, 
+              React.createElement("div", {src: bgImage, className: "lur-1", style: {position:"absolute",top:0,left:0,zIndex:0,width:"100%",backgroundImage:'url("'+bgImage+'")',height:70, borderTopLeftRadius:3,borderTopRightRadius:3,backgroundColor:"#eee",borderBottom:"1px solid #ccc"}}), 
+              React.createElement("div", {style: {marginTop:20,height:55,width:55,border:"2px solid white",oldBoxShadow:"0px 2px 4px 0px rgba(0,0,0,0.30)",backgroundImage:"url('"+img+"')",backgroundSize:"cover",borderRadius:45,display:"inline-block",marginLeft:-13,cursor:"pointer",position:"relative",zIndex:1,boxShadow:"rgba(0, 0, 0, 0.0980392) 0px 1px 2px 1px"}}), 
+
+              React.createElement("h4", null, c.name), 
+              React.createElement("h5", null, c.category.industry), 
+
+              contacts, " ", React.createElement("br", null), 
+              React.createElement("a", {href: "javascript:", className: "btn btn-primary", 
+                  style: {backgroundColor:"#ccc !important",borderColor:"#ccc !important"}}, "Unsubscribe"), 
+              React.createElement("hr", null), 
+              React.createElement("span", {className: "label label-default", 
+                style: {backgroundColor:"#ccc",float:"left"}}, "COMPANY"), 
+              React.createElement("div", {style: {float:"right"}}, 
+              _.map(_.values(data), function(v, i) { 
+                  if(v.length) {
+                     return (React.createElement("span", {style: {marginRight:15,color:"#aaa",
+                                cursor:"pointer"}}, 
+                      React.createElement("i", {className: event_icons[i]}), " ", v.length
+                      ) 
+                      )
+                  }
+               })
+              )
+          
+        )
+      )
+    )
+  }
+})
+
+var ContactDetailPopup = React.createClass({displayName: 'ContactDetailPopup',
+  render: function() {
+    c = this.props.contact
+
+    bgImage = "https://unsplash.it/400/200?blur&random="+Math.random().toString(36).substring(7);
+    img = (c.avatar) ? c.avatar : "images/user.png"
+    return (
+      React.createElement("div", {className: "panel panel-default", style: {width:400,height:"auto"}}, 
+        React.createElement("div", {className: "panel-body", style: {textAlign:"center"}}, 
+              React.createElement("div", {src: bgImage, className: "lur-1", style: {position:"absolute",top:0,left:0,zIndex:0,width:"100%",backgroundImage:'url("'+bgImage+'")',height:70, borderTopLeftRadius:3,borderTopRightRadius:3,backgroundColor:"#eee",borderBottom:"1px solid #ccc"}}), 
+              React.createElement("div", {style: {marginTop:20,height:55,width:55,border:"2px solid white",oldBoxShadow:"0px 2px 4px 0px rgba(0,0,0,0.30)",backgroundImage:"url('"+img+"')",backgroundSize:"cover",borderRadius:45,display:"inline-block",marginLeft:-13,cursor:"pointer",position:"relative",zIndex:1,boxShadow:"rgba(0, 0, 0, 0.0980392) 0px 1px 2px 1px"}}), 
+
+              React.createElement("h4", null, c.name.fullName), 
+              React.createElement("h5", null, c.employment.title), 
+
+              React.createElement("a", {href: "javascript:", className: "btn btn-primary"}, "Email"), "  ", 
+              React.createElement("a", {href: "javascript:", className: "btn btn-primary"}, "Unsubscribe"), 
+
+              React.createElement("hr", null), 
+              React.createElement("h5", null, "20 ")
+          
+        )
+      )
+    )
+  }
+})
+
+
+var CompanyBlogEventContent = React.createClass({displayName: 'CompanyBlogEventContent',
+  render: function() {
+    return (
+      React.createElement("div", null, 
+          React.createElement("h5", {style: {fontWeight:"bold"}}, this.props.event.link_text), 
+          React.createElement("h5", null, this.props.event.link_span)
+      )
+    )
+  }
+})
+
+var CompanyNewsEventContent = React.createClass({displayName: 'CompanyNewsEventContent',
+  render: function() {
+    return (
+      React.createElement("div", null, 
+        React.createElement("h4", null, this.props.event.title), 
+        React.createElement("h6", null, this.props.event.source)
+      )
+    )
+  }
+})
+
+var CompanyPressEventContent = React.createClass({displayName: 'CompanyPressEventContent',
+  render: function() {
+    return (
+      React.createElement("div", null, 
+          React.createElement("h5", {style: {fontWeight:"bold"}}, this.props.event.title), 
+          React.createElement("h5", null, this.props.event.description)
+      )
+    )
+  }
+})
+
+var CompanyHiringEventContent = React.createClass({displayName: 'CompanyHiringEventContent',
+  render: function() {
+    return (
+      React.createElement("div", null, 
+          React.createElement("h5", {style: {fontWeight:"bold"}}, this.props.event.job_title), 
+          React.createElement("h5", null, this.props.event.summary)
+      )
+    )
+  }
+})
+
+var FacebookEventContent = React.createClass({displayName: 'FacebookEventContent',
+  render: function() {
+    return (
+      React.createElement("div", null, 
+          React.createElement("h5", {style: {fontWeight:"bold"}}, this.props.event.link_title), 
+          React.createElement("h5", null, this.props.event.link_summary)
+      )
+    )
+  }
+})
+
+var TwitterEventContent = React.createClass({displayName: 'TwitterEventContent',
+  render: function() {
+    return (
+      React.createElement("div", null, 
+          React.createElement("h4", null, this.props.event.text)
+      )
+    )
+  }
+})
+
+var LinkedinEventContent = React.createClass({displayName: 'LinkedinEventContent',
+  render: function() {
+    return (
+      React.createElement("div", null, 
+          React.createElement("h4", null, this.props.event.post)
+      )
+    )
+  }
+})
+
+var CompanyEventCard = React.createClass({displayName: 'CompanyEventCard',
+  getInitialState: function() {
+    return {
+      contacts: [],
+      ci: {},
+      blogEvent: [],
+      newsEvent: [],
+      pressEvent: [],
+      tweetEvent: [],
+      linkedinEvent: [],
+      facebookEvent: [],
+      hiringEvent: [],
+      events: { }
+    }
+  },
+
+  componentDidUpdate: function() {
+    company = this.state.ci
+    
+    var _this = this;
+    if(!_.isEqual(this.state.ci, {})) {
+      if(document.querySelector('.company-card-'+ci.domain.replace(".",""))) {
+        console.log("company popup")
+        var drop;
+        drop = new Drop({
+          target: document.querySelector('.company-card-'+ci.domain.replace(".","")),
+          content: React.renderToStaticMarkup(React.createElement(CompanyDetailPopup, {company: company, contacts: _this.state.contacts, events: _this.state.events})),
+          position: 'top left',
+          openOn: 'hover'
+        });
+      }
+    }
+
+    _.map(this.state.contacts, function(contact, i) {
+        if(document.querySelector('.tether-test-'+contact.id)) {
+          var drop;
+          drop = new Drop({
+            target: document.querySelector('.tether-test-'+contact.id),
+            content: React.renderToStaticMarkup(React.createElement(ContactDetailPopup, {contact: contact})),
+            position: 'top left',
+            openOn: 'hover'
+          });
+        }
+    })
+  },
+
+  componentDidMount: function() {
+    var _this = this;
+    $.ajax({
+      url:location.origin+"/contacts/"+this.props.event.domain,
+      dataType:"json",
+      success: function(res) {
+        //console.log("COMPANYEVENTCARD")
+        //console.log(res)
+        _this.setState({contacts: res})
+      },
+      error: function(err) {
+        console.log(err)
+      }
+    })
+
+    $.ajax({
+      url:location.origin+"/company/"+this.props.event.domain,
+      dataType:"json",
+      success: function(res) {
+        //console.log(res)
+        _this.setState({ci: res})
+      },
+      error: function(err) {
+        console.log(err)
+      }
+    })
+
+    var _this = this;
+    $.ajax({
+      url:location.origin+"/events/"+this.props.event.domain,
+      dataType:"json",
+      success: function(res) {
+        console.log(res)
+        _this.setState({blogEvent: _.where(res, {event_type: "CompanyBlogEvent"})})
+        _this.setState({newsEvent: _.where(res, {event_type: "CompanyNewsEvent"})})
+        _this.setState({pressEvent: _.where(res, {event_type: "CompanyPressEvent"})})
+        _this.setState({tweetEvent: _.where(res, {event_type: "TweetEvent"})})
+        _this.setState({linkedinEvent: _.where(res, {event_type: "LinkedinEvent"})})
+        _this.setState({facebookEvent: _.where(res, {event_type: "FacebookEvent"})})
+        _this.setState({hiringEvent: _.where(res, {event_type: "HiringEvent"})})
+        data = {
+          blogEvent: _.where(res, {event_type: "CompanyBlogEvent"}),
+          newsEvent: _.where(res, {event_type: "CompanyNewsEvent"}),
+          pressEvent: _.where(res, {event_type: "CompanyPressEvent"}),
+          tweetEvent: _.where(res, {event_type: "TweetEvent"}),
+          linkedinEvent: _.where(res, {event_type: "LinkedinEvent"}),
+          facebookEvent: _.where(res, {event_type: "FacebookEvent"}),
+          hiringEvent: _.where(res, {event_type: "HiringEvent"}) 
+        }
+        _this.setState({events: data})
+        console.log(_.map(_.values(data), function(v) { return v.length }))
+        console.log(_.keys(data))
+      },
+
+      error: function(err) {
+        console.log(err)
+      },
+    })
+  },
+
+  render: function() {
+    //console.log("CONTACTS")
+    //console.log(this.state.contacts)
+    if(this.state.contacts.length) {
+      contacts = _.map(this.state.contacts, function(contact, i) {
+        //console.log(contact.avatar)
+        avatar = (contact.avatar) ? contact.avatar : "images/user.png"
+        return React.createElement(UserPic, {_class: "tether-test tether-test-"+contact.id, img: contact.avatar})
+      })
+      names = _.map(this.state.contacts, function(contact, i) {
+        return React.createElement("h5", {style: {fontWeight:400,display:"inline",cursor:"pointer"}}, contact.name.givenName+", ")
+      })
+      names = ""
+    } else {
+      contacts = ""
+      names = ""
+    }
+    
+    //console.log(this.state.ci)
+    ci = this.state.ci
+    ci_domain = (ci.domain) ? ci.domain : ""
+    
+    return (
+      React.createElement("div", {style: {backgroundColor:"rgba(255,255,255,0.4)",borderRadius:4,border:"1px solid rgba(255,255,255,0.4)",marginBottom:30}, id: "mark_organ_3"}, 
+      React.createElement("div", {className: "panel panel-default", style: {boxShadow: "rgba(0, 0, 0, 0.0980392) 0px 5px 2px 1px",height:"auto",backgroundColor:"rgba(255,255,255,1.0)",border:"none",borderBottomRightRadius:0,borderBottomLeftRadius:0}, id: "mark_organ_2"}, 
+        React.createElement("div", {className: "panel-body", id: "mark_organ"}, 
+           React.createElement("a", {href: "javascript:", className: "thumbnail company-card-"+ci_domain.replace(".",""), 
+              style: {height:55,width:55,marginRight:15,float:"left",marginBottom:0}}, 
+              React.createElement("img", {src: (ci.logo) ? ci.logo : "images/empty_company.png", alt: ""})
+            ), 
+
+            React.createElement("h4", {style: {height:15,marginBottom:0}}, 
+              React.createElement("a", {href: "javascript:", className: "company-card-"+ci_domain.replace(".","")}, 
+                ci.name
+              )
+            ), 
+            React.createElement("h4", {style: {height:15,marginTop:3}}, React.createElement("small", null, (ci.category) ? ci.category.industry : "", " - ", moment.unix(this.props.event.timestamp).fromNow())), 
+            React.createElement("i", {className: this.props.logo, style: {color:"#aaa",float:"right",marginTop:-40,fontSize:25}}), 
+
+            React.createElement("hr", {style: {marginRight:0}}), 
+            this.props.content, 
+            React.createElement("br", null), 
+            React.createElement("span", {style: {marginLeft:10}}, contacts), 
+            names
+        )
+      ), 
+
+        React.createElement("a", {href: "javascript:", className: "response-icon"}, React.createElement("i", {className: "fa fa-comment"})), 
+        React.createElement("a", {href: "javascript:", className: "response-icon"}, React.createElement("i", {className: "fa fa-envelope"})), 
+        React.createElement("a", {href: "javascript:", className: "response-icon"}, React.createElement("i", {className: "fa fa-star"})), 
+        React.createElement("a", {href: "javascript:", className: "response-icon"}, React.createElement("i", {className: "fa fa-external-link"})), 
+        React.createElement("br", null)
+      )
+    )
+  }
+})
+
+var CompanyNewsEventCard = React.createClass({displayName: 'CompanyNewsEventCard',
+  render: function() {
+    return (
+      React.createElement("div", {style: {backgroundColor:"rgba(255,255,255,0.4)",borderRadius:4,border:"1px solid rgba(255,255,255,0.4)",marginBottom:20}}, 
+      React.createElement("div", {className: "panel panel-default", style: {boxShadow: "rgba(0, 0, 0, 0.0980392) 0px 5px 2px 1px",height:150,backgroundColor:"rgba(255,255,255,0.9)",border:"none"}}, 
+        React.createElement("div", {className: "panel-body"}, 
+          "Facebook Event Card", 
+              React.createElement("img", {src: "images/user.png", 
+                   style: {height:30,width:30,borderRadius:20,float:"left",marginRight:15}})
+        )
+      ), 
+        "card", 
+        React.createElement("br", null)
+      )
+    )
+  }
+})
+var CompanyPressEventCard = React.createClass({displayName: 'CompanyPressEventCard',
+  render: function() {
+    return (
+      React.createElement("div", {style: {backgroundColor:"rgba(255,255,255,0.4)",borderRadius:4,border:"1px solid rgba(255,255,255,0.4)",marginBottom:20}}, 
+      React.createElement("div", {className: "panel panel-default", style: {boxShadow: "rgba(0, 0, 0, 0.0980392) 0px 5px 2px 1px",height:150,backgroundColor:"rgba(255,255,255,0.9)",border:"none"}}, 
+        React.createElement("div", {className: "panel-body"}, 
+          "Facebook Event Card", 
+              React.createElement("img", {src: "images/user.png", 
+                   style: {height:30,width:30,borderRadius:20,float:"left",marginRight:15}})
+        )
+      ), 
+        "card", 
+        React.createElement("br", null)
+      )
+    )
+  }
+})
+
+
+var CompanyHiringEventCard = React.createClass({displayName: 'CompanyHiringEventCard',
+  render: function() {
+    return (
+      React.createElement("div", {style: {backgroundColor:"rgba(255,255,255,0.4)",borderRadius:4,border:"1px solid rgba(255,255,255,0.4)",marginBottom:20}}, 
+      React.createElement("div", {className: "panel panel-default", style: {boxShadow: "rgba(0, 0, 0, 0.0980392) 0px 5px 2px 1px",height:150,backgroundColor:"rgba(255,255,255,0.9)",border:"none"}}, 
+        React.createElement("div", {className: "panel-body"}, 
+          "Facebook Event Card", 
+              React.createElement("img", {src: "images/user.png", 
+                   style: {height:30,width:30,borderRadius:20,float:"left",marginRight:15}})
+        )
+      ), 
+        "card", 
+        React.createElement("br", null)
+      )
+    )
+  }
+})
+
+var Test = React.createClass({displayName: 'Test',
+  render: function() {
+    return (
+      React.createElement("div", null, 
+        "Test"
+      )
+    )
+  }
+})
+
+var FacebookEventCard = React.createClass({displayName: 'FacebookEventCard',
+  componentDidMount: function() {
+    var drop;
+    drop = new Drop({
+      target: document.querySelector('#tether-test'),
+      content: React.renderToStaticMarkup(React.createElement(ContactDetailPopup, null)),
+      position: 'top left',
+      openOn: 'hover'
+    });
+  },
+  render: function() {
+    return (
+      React.createElement("div", {style: {backgroundColor:"rgba(255,255,255,0.4)",borderRadius:4,border:"1px solid rgba(255,255,255,0.4)",marginBottom:20}}, 
+      React.createElement("div", {className: "panel panel-default", style: {boxShadow: "rgba(0, 0, 0, 0.0980392) 0px 5px 2px 1px",height:150,backgroundColor:"rgba(255,255,255,0.9)",border:"none"}}, 
+        React.createElement("div", {className: "panel-body", id: "mark_organ_4"}, 
+            React.createElement("a", {href: "javascript:", id: "tether-test"}, "Mark Organ"), 
+
+
+              React.createElement("img", {src: "images/user.png", 
+                   style: {height:30,width:30,borderRadius:20,float:"left",marginRight:15}})
+        )
+      ), 
+        "card", 
+        React.createElement("br", null)
+      )
+    )
+  }
+})
+
+var TwitterEventCard = React.createClass({displayName: 'TwitterEventCard',
+  render: function() {
+    return (
+      React.createElement("div", {style: {backgroundColor:"rgba(255,255,255,0.4)",borderRadius:4,border:"1px solid rgba(255,255,255,0.4)",marginBottom:20}}, 
+      React.createElement("div", {className: "panel panel-default", style: {boxShadow: "rgba(0, 0, 0, 0.0980392) 0px 5px 2px 1px",height:150,backgroundColor:"rgba(255,255,255,0.9)",border:"none"}}, 
+        React.createElement("div", {className: "panel-body"}, 
+          "Twitter Event Card", 
+              React.createElement("img", {src: "images/user.png", 
+                   style: {height:30,width:30,borderRadius:20,float:"left",marginRight:15}})
+        )
+      ), 
+        "card", 
+        React.createElement("br", null)
+      )
+    )
+  }
+})
+
+var LinkedinEventCard = React.createClass({displayName: 'LinkedinEventCard',
+  render: function() {
+    return (
+      React.createElement("div", {style: {backgroundColor:"rgba(255,255,255,0.4)",borderRadius:4,border:"1px solid rgba(255,255,255,0.4)",marginBottom:20}}, 
+      React.createElement("div", {className: "panel panel-default", style: {boxShadow: "rgba(0, 0, 0, 0.0980392) 0px 5px 2px 1px",height:150,backgroundColor:"rgba(255,255,255,0.9)",border:"none"}}, 
+        React.createElement("div", {className: "panel-body"}, 
+          "Facebook Event Card", 
+              React.createElement("img", {src: "images/user.png", 
+                   style: {height:30,width:30,borderRadius:20,float:"left",marginRight:15}})
+        )
+      ), 
+        "card", 
+        React.createElement("br", null)
+      )
+    )
+  }
+})
+
+module.exports = {
+  CompanyEventCard: CompanyEventCard,
+  /*
+  CompanyBlogEventCard: CompanyBlogEventCard,
+  CompanyNewsEventCard: CompanyNewsEventCard,
+  CompanyPressEventCard: CompanyPressEventCard,
+  CompanyHiringEventCard: CompanyHiringEventCard,
+  TwitterEventCard: TwitterEventCard,
+  FacebookEventCard: FacebookEventCard,
+  LinkedinEventCard: LinkedinEventCard,
+  */
+
+  CompanyBlogEventContent: CompanyBlogEventContent,
+  CompanyNewsEventContent: CompanyNewsEventContent,
+  CompanyPressEventContent: CompanyPressEventContent,
+  CompanyHiringEventContent: CompanyHiringEventContent,
+  TwitterEventContent: TwitterEventContent,
+  FacebookEventContent: FacebookEventContent,
+  LinkedinEventContent: LinkedinEventContent
+}
 
 });
 
@@ -964,6 +1711,161 @@ module.exports = LandingPage
 
 });
 
+;require.register("profile", function(exports, require, module) {
+
+var Profile = React.createClass({displayName: 'Profile',
+  render: function() {
+    return (
+      React.createElement("div", {style: {color:"white"}}, 
+        React.createElement("h2", null, 
+          " ", 
+          React.createElement("i", {className: "fa fa-user", style: {marginRight:10}}), 
+          "Account"), 
+        React.createElement("hr", null), 
+        React.createElement("br", null), 
+        React.createElement("div", {className: "row", 
+        style: {paddingLeft:40,paddingRight:40}}, 
+          React.createElement("div", {className: "col-md-6"}, 
+            React.createElement("div", {className: "panel panel-default", style: {backgroundColor:"rgba(0,0,0,0)"}}, 
+              React.createElement("div", {className: "panel-body"}, 
+                React.createElement("h3", null, "Current Plan"), 
+                React.createElement("hr", null), 
+                React.createElement("h4", null, "1. Payment Information"), 
+                React.createElement("input", {className: "form-control input-lg", placeholder: "Credit Card Number", style: {marginBottom:10}}), 
+                React.createElement("input", {className: "form-control input-lg", placeholder: "MM", style: {marginBottom:5,width:"20%",display:"inline-block",marginRight:15}}), 
+                React.createElement("h4", {style: {display:"inline"}}, " /    "), 
+                React.createElement("input", {className: "form-control input-lg", placeholder: "YY", style: {marginBottom:5,width:"20%",display:"inline-block"}}), 
+                React.createElement("input", {className: "form-control input-lg", placeholder: "CVC", style: {marginBottom:5,width:"20%",display:"inline-block",float:"right"}}), 
+                React.createElement("hr", null), 
+                React.createElement("h4", null, "2.  Select Your Plan"), 
+        React.createElement("div", {className: "radio"}, 
+        React.createElement("form", {role: "form"}, 
+          React.createElement("div", {className: "radio"}, 
+              React.createElement("br", null), 
+              React.createElement("input", {type: "radio", name: "radio2", id: "radio3", value: "option1", 
+                  style: {paddingTop:15}}), 
+              React.createElement("label", {for: "radio3"}
+              ), 
+              React.createElement("div", {style: {marginTop:-40,marginLeft:20}}, 
+                React.createElement("h4", {style: {fontWeight:800,marginBottom:0}}, "Free Trial"), 
+                React.createElement("h5", {style: {fontWeight:600,color:"#aaa",marginTop:4}}, "Free Trial")
+              ), 
+              React.createElement("h4", {style: {float:"right",marginTop:-40,marginRight:40}}, "$0")
+          ), 
+          React.createElement("div", {className: "radio"}, 
+              React.createElement("br", null), 
+              React.createElement("input", {type: "radio", name: "radio2", id: "radio3", value: "option1", 
+                  style: {paddingTop:15}}), 
+              React.createElement("label", {for: "radio3"}
+              ), 
+              React.createElement("div", {style: {marginTop:-40,marginLeft:20}}, 
+                React.createElement("h4", {style: {fontWeight:800,marginBottom:0}}, "Starter"), 
+                React.createElement("h5", {style: {fontWeight:600,color:"#aaa",marginTop:4}}, "Free Trial")
+              ), 
+              React.createElement("h4", {style: {float:"right",marginTop:-40,marginRight:40}}, "$99")
+          ), 
+          React.createElement("div", {className: "radio"}, 
+              React.createElement("br", null), 
+              React.createElement("input", {type: "radio", name: "radio2", id: "radio3", value: "option1", 
+                  style: {paddingTop:15}}), 
+              React.createElement("label", {for: "radio3"}
+              ), 
+              React.createElement("div", {style: {marginTop:-40,marginLeft:20}}, 
+                React.createElement("h4", {style: {fontWeight:800,marginBottom:0}}, "Professional"), 
+                React.createElement("h5", {style: {fontWeight:600,color:"#aaa",marginTop:4}}, "Free Trial")
+              ), 
+              React.createElement("h4", {style: {float:"right",marginTop:-40,marginRight:40}}, "$499")
+          ), 
+          React.createElement("div", {className: "radio"}, 
+              React.createElement("br", null), 
+              React.createElement("input", {type: "radio", name: "radio2", id: "radio3", value: "option1", 
+                  style: {paddingTop:15}}), 
+              React.createElement("label", {for: "radio3"}
+              ), 
+              React.createElement("div", {style: {marginTop:-40,marginLeft:20}}, 
+                React.createElement("h4", {style: {fontWeight:800,marginBottom:0}}, "Enterprise"), 
+                React.createElement("h5", {style: {fontWeight:600,color:"#aaa",marginTop:4}}, "Free Trial")
+              ), 
+              React.createElement("h4", {style: {float:"right",marginTop:-40,marginRight:40}}, "$999")
+          )
+        ), 
+
+                React.createElement("hr", null), 
+          React.createElement("h4", null, "3. Select Billing Cycle"), 
+              React.createElement("br", null), 
+              React.createElement("form", {role: "form"}, 
+                React.createElement("div", {className: "radio", style: {display:"inline"}}, 
+                    React.createElement("input", {type: "radio", name: "radio2", id: "radio3", value: "option1"}), 
+                    React.createElement("label", {for: "radio3"}, React.createElement("h5", {style: {marginTop:0}}, "Monthly "))
+                ), 
+                " " + ' ' +
+                " ", 
+                React.createElement("div", {className: "radio", style: {display:"inline"}}, 
+                    React.createElement("input", {type: "radio", name: "radio2", id: "radio4", value: "option2"}), 
+                    React.createElement("label", {for: "radio4"}, React.createElement("h5", {style: {marginTop:0}}, "Yearly  ", React.createElement("span", {style: {fontWeight:"bold",color:"#15cd72"}}, "-20 %")))
+                )
+              ), 
+  
+              React.createElement("br", null), 
+              React.createElement("br", null), 
+          React.createElement("a", {href: "javascript:", style: {display:"block",textAlign:"center",fontSize:16}, 
+              className: "btn btn-lg btn-primary"}, 
+              "Complete and Upgrade"
+          )
+
+        )
+              )
+            )
+          ), 
+          React.createElement("div", {className: "col-md-6"}, 
+            React.createElement("div", {className: "panel panel-default", style: {backgroundColor:"rgba(0,0,0,0)"}}, 
+              React.createElement("div", {className: "panel-body"}, 
+                React.createElement("h3", null, "Billing Information"), 
+                React.createElement("hr", null), 
+                React.createElement("input", {className: "form-control input-lg", placeholder: "First Name", style: {marginBottom:10,width:"48.5%",display:"inline-block",marginRight:15}}), 
+                React.createElement("input", {className: "form-control input-lg", placeholder: "Last Name", style: {marginBottom:10,width:"48.5%",display:"inline-block"}}), 
+                React.createElement("input", {className: "form-control input-lg", placeholder: "Company", style: {marginBottom:10}}), 
+                React.createElement("input", {className: "form-control input-lg", placeholder: "Address", style: {marginBottom:5}}), 
+                React.createElement("input", {className: "form-control input-lg", placeholder: "Postal Code", style: {marginBottom:10,width:"48%",display:"inline-block",marginRight:15}}), 
+                React.createElement("input", {className: "form-control input-lg", placeholder: "City", style: {marginBottom:10,width:"48%",display:"inline-block"}}), 
+          React.createElement("br", null), 
+          React.createElement("a", {href: "javascript:", style: {display:"block",textAlign:"center",fontSize:16}, 
+              className: "btn btn-lg btn-primary"}, 
+              "Update Billing Information"
+          )
+              )
+            )
+          ), 
+          React.createElement("div", {className: "col-md-6"}, 
+            React.createElement("div", {className: "panel panel-default", style: {backgroundColor:"rgba(0,0,0,0)"}}, 
+              React.createElement("div", {className: "panel-body"}, 
+                React.createElement("h3", null, "Invoices"), 
+                React.createElement("hr", null)
+              )
+            )
+          ), 
+          React.createElement("div", {className: "col-md-6"}, 
+            React.createElement("div", {className: "panel panel-default", style: {backgroundColor:"rgba(0,0,0,0)"}}, 
+              React.createElement("div", {className: "panel-body"}, 
+                React.createElement("h3", null, "My Account"), 
+                React.createElement("hr", null), 
+                React.createElement("input", {className: "form-control input-lg", placeholder: "Email", style: {marginBottom:10}}), 
+                React.createElement("input", {className: "form-control input-lg", placeholder: "New Password", type: "password", style: {marginBottom:10}}), 
+                React.createElement("input", {className: "form-control input-lg", placeholder: "Confirm Password", type: "password", style: {marginBottom:10}}), 
+                React.createElement("a", {href: "javascript:", className: "btn btn-primary", style: {display:"block",fontSize:16}}, "Update Account")
+              )
+            )
+          )
+        )
+      )
+    )
+  }
+})
+
+module.exports = Profile
+
+});
+
 ;require.register("profile_sidebar", function(exports, require, module) {
 var ProfileSidebar = React.createClass({displayName: 'ProfileSidebar',
 
@@ -1084,11 +1986,37 @@ var Pricing = require("pricing")
 var Login = require("login")
 var Signup = require("signup")
 var Sidebar = require("sidebar")
+var Profile = require("profile")
+var ContactDetail = require("contact_detail")
+var CompanyDetail = require("company_detail")
+
+var CompanyEventCard = require("event_cards").CompanyEventCard
+/*
+var CompanyBlogEventCard = require("event_cards").CompanyBlogEventCard
+var CompanyNewsEventCard = require("event_cards").CompanyNewsEventCard
+var CompanyPressEventCard = require("event_cards").CompanyPressEventCard
+var CompanyHiringEventCard = require("event_cards").CompanyHiringEventCard
+var FacebookEventCard = require("event_cards").FacebookEventCard
+var TwitterEventCard = require("event_cards").TwitterEventCard
+var LinkedinEventCard = require("event_cards").LinkedinEventCard
+*/
+
+var CompanyBlogEventContent = require("event_cards").CompanyBlogEventContent
+var CompanyNewsEventContent = require("event_cards").CompanyNewsEventContent
+var CompanyPressEventContent = require("event_cards").CompanyPressEventContent
+var CompanyHiringEventContent = require("event_cards").CompanyHiringEventContent
+var FacebookEventContent = require("event_cards").FacebookEventContent
+var TwitterEventContent = require("event_cards").TwitterEventContent
+var LinkedinEventContent = require("event_cards").LinkedinEventContent
 
 var Route = ReactRouter.Route;
 var RouteHandler = ReactRouter.RouteHandler;
 
 var Navbar = React.createClass({displayName: 'Navbar',
+  gotoHome: function() {
+    location.href= "#"
+  },
+
   render: function() {
     return (
       React.createElement("header", {className: "header", style: {paddingTop:20,paddingBottom:40}}, 
@@ -1096,7 +2024,7 @@ var Navbar = React.createClass({displayName: 'Navbar',
           React.createElement("li", {className: "app-logo"}, 
             React.createElement("div", null, 
             React.createElement("img", {src: "images/blaze-logo.png", style: {marginTop:4,height:18,marginLeft:-15,display:"none"}}), 
-            React.createElement("div", {style: {}, style: {color:"#FFBB01",marginLeft:-20}}, " ", React.createElement("i", {className: "fa fa-bolt"}), 
+            React.createElement("div", {style: {}, onClick: this.gotoHome, style: {color:"#FFBB01",marginLeft:-20}}, " ", React.createElement("i", {className: "fa fa-bolt"}), 
               "ClearSpark")
             )
           ), 
@@ -1147,7 +2075,7 @@ var AuthenticatedApp = React.createClass({displayName: 'AuthenticatedApp',
     return (
       React.createElement("div", {className: "app"}, 
           React.createElement(Sidebar, null), 
-          React.createElement("div", {className: "col-xs-7 col-sm-9 col-md-9 main-bg"}, 
+          React.createElement("div", {className: "col-xs-7 col-sm-9 col-md-9 main-bg", style: {overflow:"auto"}}, 
             React.createElement(RouteHandler, null)
           )
       )
@@ -1171,45 +2099,87 @@ var Lookup = React.createClass({displayName: 'Lookup',
 })
 
 var Feed = React.createClass({displayName: 'Feed',
-  render: function() {
-    return (
-        React.createElement("div", {className: "col-md-offset-2 col-md-8"}
-        )
-    )
-  }
-})
+  getInitialState: function() {
+    return {
+      events : []
+    }
+  },
 
-var Feed = React.createClass({displayName: 'Feed',
+  componentDidMount: function() {
+    var _this = this;
+    $.ajax({
+      url:location.origin+"/events",
+      dataType:"json",
+      success: function(res) {
+        console.log(res)
+        _this.setState({events: res})
+      },
+      error: function(err) {
+        console.log(err)
+      }
+    })
+  },
+
   render: function() {
+    var events = _.map(this.state.events, function(event) {
+      if(event.event_type == "CompanyBlogEvent")
+        return React.createElement(CompanyEventCard, {
+                logo: "fa fa-rss", event: event, 
+                content: React.createElement(CompanyBlogEventContent, {event: event})})
+      else if(event.event_type == "CompanyNewsEvent")
+        return React.createElement(CompanyEventCard, {
+                logo: "fa fa-newspaper-o", event: event, 
+                content: React.createElement(CompanyNewsEventContent, {event: event})})
+      else if(event.event_type == "CompanyPressEvent")
+        return React.createElement(CompanyEventCard, {
+                logo: "fa fa-bullhorn", event: event, 
+                content: React.createElement(CompanyPressEventContent, {event: event})})
+      else if(event.event_type == "CompanyHiringEvent")
+        return React.createElement(CompanyEventCard, {
+                logo: "fa fa-suitcase", event: event, 
+                content: React.createElement(CompanyHiringEventContent, {event: event})})
+      else if(event.event_type == "FacebookEvent")
+        return React.createElement(CompanyEventCard, {
+                logo: "fa fa-facebook", event: event, 
+                content: React.createElement(FacebookEventContent, {event: event})})
+      else if(event.event_type == "TweetEvent")
+        return React.createElement(CompanyEventCard, {
+                logo: "fa fa-twitter", event: event, 
+                content: React.createElement(TwitterEventContent, {event: event})})
+      else if(event.event_type == "LinkedinEvent")
+        return React.createElement(CompanyEventCard, {
+                logo: "fa fa-linkedin", event: event, 
+                content: React.createElement(LinkedinEventContent, {event: event})})
+    })
     return (
-        React.createElement("div", {className: "col-md-offset-2 col-md-7"}, 
-          React.createElement("br", null), 
-          React.createElement(CompanyEventCard, null), 
-          React.createElement("br", null), 
-          React.createElement("div", {className: "panel panel-default", style: {boxShadow: "rgba(0, 0, 0, 0.0980392) 0px 1px 2px 1px",height:150}}, 
-            React.createElement("div", {className: "panel-body"}, 
-              "lol"
-            )
-          ), 
-          React.createElement("br", null), 
-          React.createElement("div", {className: "panel panel-default", style: {boxShadow: "rgba(0, 0, 0, 0.0980392) 0px 1px 2px 1px",height:150}}, 
-            React.createElement("div", {className: "panel-body"}, 
-              "lol"
-            )
-          )
+        React.createElement("div", {className: "col-md-offset-2 col-md-9", style: {paddingTop:50}}, 
+          events
         )
     )
   }
 })
 
 var ContactCard = React.createClass({displayName: 'ContactCard',
+    gotoContactDetail: function() {
+      location.href = "#/contact/"+this.props.contact.email
+    },
+
+    gotoCompanyDetail: function(e) {
+      location.href = "#/company/"+this.props.contact.employment.domain
+      e.stopPropagation()
+    },
+
     render: function() {
+        contact = this.props.contact
+        //console.log(contact)
         return (
-              React.createElement("div", null, 
-              React.createElement("img", {src: "images/user.png", 
+              React.createElement("div", {onClick: this.gotoContactDetail, style: {cursor:"pointer"}}, 
+              React.createElement("img", {src: (contact.avatar) ? contact.avatar : "images/user.png", 
                    style: {height:30,width:30,borderRadius:20,float:"left",marginLeft:20,marginRight:15}}), 
-                React.createElement("h5", {style: {fontWeight:600,marginBottom:5}}, "Robin Singh"), 
-                React.createElement("h6", {style: {marginTop:5}}, "Founder at Customero"), 
+                React.createElement("h5", {style: {fontWeight:600,marginBottom:5}}, (contact.name) ? contact.name.fullName : ""), 
+                React.createElement("h6", {style: {marginTop:5}}, 
+                  (contact.employment) ? React.createElement("span", null, contact.employment.title + ", ", React.createElement("a", {href: "javascript:", onClick: this.gotoCompanyDetail, style: {color:"white",fontWeight:"bold"}}, contact.employment.name)) : ""
+                ), 
     
               React.createElement("hr", {style: {marginLeft:20,marginRight:20,color:"black",backgroundColor:"rgba(255,255,255,0.1)",opacity:"0.3",marginTop:10,marginBottom:10}})
               )
@@ -1217,92 +2187,48 @@ var ContactCard = React.createClass({displayName: 'ContactCard',
     }
 })
 
-var CompanyEventCard = React.createClass({displayName: 'CompanyEventCard',
-  render: function() {
-    return (
-      React.createElement("div", {style: {backgroundColor:"rgba(255,255,255,0.4)",borderRadius:4,border:"1px solid rgba(255,255,255,0.4)"}}, 
-      React.createElement("div", {className: "panel panel-default", style: {boxShadow: "rgba(0, 0, 0, 0.0980392) 0px 5px 2px 1px",height:150,backgroundColor:"rgba(255,255,255,0.9)",border:"none"}}, 
-        React.createElement("div", {className: "panel-body"}, 
-          "Example Event", 
-              React.createElement("img", {src: "images/user.png", 
-                   style: {height:30,width:30,borderRadius:20,float:"left",marginRight:15}})
-        )
-      ), 
-        "card", 
-        React.createElement("br", null)
-      )
 
-    )
-  }
-})
 
-var ContactDetail = React.createClass({displayName: 'ContactDetail',
-  render: function() {
-    return (
-      React.createElement("div", {style: {color:"white"}}, 
-        React.createElement("br", null), 
-        React.createElement("img", {src: "images/user.png", 
-             style: {height:100,width:100,borderRadius:5,marginRight:15,border:"2px solid white",float:"left"}}), 
-          React.createElement("h3", null, "Robin Singh"), 
-          React.createElement("h5", null, "Founder, Customero"), 
-        React.createElement("hr", {style: {marginTop:50}}), 
-        React.createElement("div", {className: "col-md-4", style: {borderRight:"1px solid white"}}, 
-          React.createElement("i", {className: "fa fa-twitter"}), "   Twitter", 
-          React.createElement("hr", null), 
-          React.createElement("i", {className: "fa fa-facebook"}), "   Facebook", 
-          React.createElement("hr", null), 
-          React.createElement("i", {className: "fa fa-linkedin"}), "   Linkedin", 
-          React.createElement("hr", null), 
-          React.createElement("i", {className: "fa fa-square-o"}), "   Glassdoor"
-        ), 
-        React.createElement("div", {className: "col-md-4", style: {borderRight:"1px solid white"}}, 
-          React.createElement("i", {className: "fa fa-newspaper-o"}), "   News Mentions", 
-          React.createElement("hr", null), 
-          React.createElement("i", {className: "fa fa-rss"}), "   Blog Posts", 
-          React.createElement("hr", null), 
-          React.createElement("i", {className: "fa fa-bullhorn"}), "   Press Releases", 
-          React.createElement("hr", null), 
-          React.createElement("i", {className: "fa fa-suitcase"}), "   Jobs", 
-          React.createElement("hr", null), 
-          React.createElement("i", {className: "fa fa-wrench"}), "   Technology"
-        ), 
-        React.createElement("div", {className: "col-md-4"}, 
-          React.createElement("div", {style: {textAlign:"center"}}, 
-          React.createElement("h5", {style: {fontWeight:"bold"}}, 
-            React.createElement("i", {className: "fa fa-clock-o"}), "  " + ' ' +
-            "TIMELINE ")
-          ), 
-          React.createElement("hr", null)
-
-        )
-      )
-    )
-  }
-})
-
-var CompanyDetail = React.createClass({displayName: 'CompanyDetail',
-  render: function() {
-    return (
-      React.createElement("div", null, 
-        "Company Detail"
-      )
-    )
-  }
-})
 
 var Contacts = React.createClass({displayName: 'Contacts',
+  getInitialState: function() {
+    return {
+      contacts: []
+    }
+  },
+  
+  componentDidMount: function() {
+    var _this = this;
+    $.ajax({
+      url:location.origin+"/contacts",
+      dataType:"json",
+      success: function(res) {
+        //console.log(res)
+        _this.setState({contacts: res})
+      },
+      error: function(err) {
+        console.log(err)
+      }
+    })
+
+  },
+
   render: function() {
+    contacts = _.map(this.state.contacts.concat(this.state.contacts), 
+        function(contact) {
+        if(contact.name)
+          return React.createElement(ContactCard, {contact: contact})
+    })
+
     return (
       React.createElement("div", null, 
         React.createElement("div", {className: "row"}, 
           React.createElement("div", {className: ""}, 
-            React.createElement("div", {style: {width:250,height:"100%",backgroundColor:"rgba(255,255,255,0.3)",position:"absolute",left:0, boxShadow: "rgba(0, 0, 0, 0.0980392) 0px 1px 2px 1px",fontWeight:800,color:"white"}}, 
+            React.createElement("div", {style: {width:250,height:"100%",backgroundColor:"rgba(255,255,255,0.3)",position:"absolute",top:0, boxShadow: "rgba(0, 0, 0, 0.0980392) 0px 1px 2px 1px",fontWeight:800,color:"white",position:"fixed",overflow:"auto"}}, 
               React.createElement("br", null), 
-              React.createElement("div", {style: {textAlign:"center"}}, " CONTACTS "), 
+              React.createElement("div", {style: {textAlign:"center"}}, "CONTACTS ("+contacts.length+")"), 
               React.createElement("hr", {style: {marginLeft:20,marginRight:20}}), 
-              React.createElement(ContactCard, null), 
-              React.createElement(ContactCard, null), 
-              React.createElement(ContactCard, null)
+              contacts
 
             )
           ), 
@@ -1324,12 +2250,12 @@ var routes = (
       React.createElement(Route, {path: "signup", handler: Signup}), 
       React.createElement(Route, {path: "pricing", handler: Pricing})
     ), 
-
     React.createElement(Route, {path: "app", handler: AuthenticatedApp}, 
       React.createElement(Route, {path: "", handler: Feed}), 
       React.createElement(Route, {path: "contacts", handler: Contacts}), 
-      React.createElement(Route, {path: "/detail/:email", handler: ContactDetail}), 
-      React.createElement(Route, {path: "/detail/:domain", handler: CompanyDetail})
+      React.createElement(Route, {path: "profile", handler: Profile}), 
+      React.createElement(Route, {path: "/contact/:email", handler: ContactDetail}), 
+      React.createElement(Route, {path: "/company/:domain", handler: CompanyDetail})
     )
   )
 );
@@ -1361,40 +2287,53 @@ module.exports = SearchBar
 
 ;require.register("sidebar", function(exports, require, module) {
 var Sidebar = React.createClass({displayName: 'Sidebar',
+  gotoContacts: function() {
+    location.href= "#/app/contacts"
+  },
+  
+  gotoHome: function() {
+    location.href= "#/app"
+  },
+
   render: function() {
     return (
           React.createElement("div", {className: "col-xs-5 col-sm-3 col-md-3", style: {borderRight:"1px solid #eee",boxShadow: "rgba(0, 0, 0, 0.1980392) 0px -6px 10px 1px",position:"relative",marginRight:20,zIndex:100}}, 
               React.createElement("br", null), 
-              React.createElement("div", {style: {fontWeight:800, fontSize:24,color:"#FFBB01",marginLeft:20}}, 
-                React.createElement("div", {style: {backgroundColor:"#FFBB01", display:"inline",width:20,height:20,borderRadius:20,display:"none"}}, 
+              React.createElement("div", {style: {fontWeight:800, fontSize:24,color:"#FFBB01",marginLeft:20,cursor:"pointer"}, onClick: this.gotoHome}, 
+                React.createElement("div", {style: {backgroundColor:"#FFBB01", display:"inline",width:20,height:20,borderRadius:20,display:"none",cursor:"pointer"}, onClick: this.gotoHome}, 
                 React.createElement("i", {className: "fa fa-bolt", style: {color:"white",fontSize:12}})
                 ), 
-                "ClearSpark"), 
+                "ClearSpark"
+              ), 
 
               React.createElement("hr", null), 
             React.createElement("ul", {style: {paddingLeft:0}}, 
-              React.createElement("li", null, 
+              React.createElement("li", {style: {cursor:"pointer"}, onClick: this.gotoHome}, 
                 React.createElement("h4", null, "INBOX", 
-                React.createElement("a", {href: "javascript:", className: "btn btn-success btn-xs", style: {float:"right"}}, " ", React.createElement("i", {className: "fa fa-plus"}))
+                React.createElement("a", {href: "javascript:", className: "btn btn-success btn-xs", style: {float:"right",display:"none"}}, " ", React.createElement("i", {className: "fa fa-plus"}))
 )), " ", React.createElement("hr", null), 
-              React.createElement("li", null, React.createElement("h4", null, "CALENDAR", 
+              React.createElement("li", {style: {display:"none"}}, React.createElement("h4", null, "CALENDAR", 
+                React.createElement("a", {href: "javascript:", className: "btn btn-success btn-xs", style: {float:"right",display:"none"}}, " ", React.createElement("i", {className: "fa fa-plus"}))
+), React.createElement("hr", null)), 
+              React.createElement("li", {style: {display:"none"}}, React.createElement("h4", null, "CRM", 
                 React.createElement("a", {href: "javascript:", className: "btn btn-success btn-xs", style: {float:"right"}}, " ", React.createElement("i", {className: "fa fa-plus"}))
-)), " ", React.createElement("hr", null), 
-              React.createElement("li", null, React.createElement("h4", null, "CRM", 
-                React.createElement("a", {href: "javascript:", className: "btn btn-success btn-xs", style: {float:"right"}}, " ", React.createElement("i", {className: "fa fa-plus"}))
-)), " ", React.createElement("hr", null), 
-              React.createElement("li", null, "CONTACTS  ", 
-                React.createElement("a", {href: "javascript:", className: "btn btn-success btn-xs", style: {float:"right"}}, " ", React.createElement("i", {className: "fa fa-plus"}))
+), React.createElement("hr", null)), 
+              React.createElement("li", {style: {cursor:"pointer"}, 
+                onClick: this.gotoContacts}, 
+                "CONTACTS  ", 
+                React.createElement("a", {href: "javascript:", className: "btn btn-success btn-xs", style: {float:"right",display:"none"}}, " ", React.createElement("i", {className: "fa fa-plus"}))
               ), 
               React.createElement("hr", null), 
 
+              React.createElement("span", {style: {display:"none"}}, 
               React.createElement("li", null, "LISTS   "), 
               React.createElement("br", null), 
             
                 React.createElement("h5", null, React.createElement("i", {className: "fa fa-list", style: {fontSize:10}}), "  List One"), 
                 React.createElement("h5", null, React.createElement("i", {className: "fa fa-list", style: {fontSize:10}}), "  List One"), 
               React.createElement("li", null, React.createElement("a", {href: "javascript:", className: "btn btn-success btn-xs"}, React.createElement("i", {className: "fa fa-plus"}), "   ADD LIST")), 
-              React.createElement("hr", null), 
+              React.createElement("hr", null)
+              ), 
 
               React.createElement("div", {style: {display:"none"}}, 
               React.createElement("li", null, "ACCOUNT"), 
@@ -1409,7 +2348,12 @@ var Sidebar = React.createClass({displayName: 'Sidebar',
               React.createElement("li", null, "Support"), 
               React.createElement("li", null, "Logout")
               )
-            )
+            ), 
+            React.createElement("div", null, " SETTINGS",  
+              React.createElement("a", {href: "#/app/profile", className: "btn btn-default btn-sm", 
+                    style: {float:"right"}}, 
+                React.createElement("i", {className: "fa fa-cog"})
+            ))
           )
     )
   }

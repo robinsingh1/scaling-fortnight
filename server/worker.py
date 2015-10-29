@@ -19,7 +19,7 @@ from raven import Client
 from raven.transport.http import HTTPTransport
 from rq.contrib.sentry import register_sentry
 
-client = Client('https://9ec1f6b3912344ebbab7a7b831048c73:a8582bbaec804a118772dc892885fef2@app.getsentry.com/55642', transport=HTTPTransport)
+client = Client('https://6ede62e4646546e38a4d79ac88812ca5:29843b37aec14df6ba5d0597a66e3e48@app.getsentry.com/55648', transport=HTTPTransport)
 
 #browser = Browser("phantomjs")
 

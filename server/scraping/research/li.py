@@ -31,10 +31,11 @@ class Linkedin:
         for link in df.link:
             q.enqueue(Linkedin()._signal, link)
 
-    def _events(self, domain, api_key="",  name=""):
-        html = Google().cache(domain)
+    def _events(self, handle, domain=None):
+        html = Google().cache(handle)
         data = self._company_posts(html)
         data["event_type"] = "LinkedinEvent"
+        data["link"] = handle
         data["domain"] = domain
         data = data.applymap(lambda x: self._remove_non_ascii(x))
         data["event_key"] = ["".join(map(str, _data.values()))[:124]

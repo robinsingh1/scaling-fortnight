@@ -6,8 +6,9 @@ import requests
 import grequests
 from google import Google
 import rethinkdb as r
+import rethink_conn
 
-conn = r.connect(db="clearspark")
+conn = r.connect(**rethink_conn.conn())
 
 class Companies:
     def _hiring(self, company_name, company_domain=None, daily=False):

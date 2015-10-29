@@ -9,6 +9,7 @@ from routes import app
 from tornadotools.route import Route
 from websocket import *
 import redis
+import rethink_conn
 
 ''' RethinkDB Changefeeds Callbacks '''
 r.set_loop_type("tornado")
@@ -21,13 +22,12 @@ high_q = Queue("high", connection=_conn)
 
 @gen.coroutine
 def company_event_changes():
-    rethink_conn = yield r.connect(db="clearspark")
+    rethink_conn = yield r.connect(**rethink_conn.conn())
     feed = yield r.table('events').changes().run(rethink_conn)
-        """ """
 
 @gen.coroutine
 def company_event_changes():
-    rethink_conn = yield r.connect(db="clearspark")
+    rethink_conn = yield r.connect(**rethink_conn.conn())
     feed = yield r.table('company_events').changes().run(rethink_conn)
     while (yield feed.fetch_next()):
         change = yield feed.next()

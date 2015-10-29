@@ -13,8 +13,9 @@ import pandas as pd
 import calendar
 import sys
 import arrow
+import rethink_conn
 
-conn = r.connect(db="clearspark")
+conn = r.connect(**rethink_conn.conn())
 
 class Helper:
   def _str_to_timestamp(self, _date):
