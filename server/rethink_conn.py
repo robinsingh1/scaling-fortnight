@@ -3,7 +3,6 @@ import rethinkdb as r
 
 def conn():
     if 'DEBUG' in os.environ:
-        #conn = r.connect(db="triggeriq")
         conn = {"db":"clearspark"}
     else:
         conn = r.connect(
