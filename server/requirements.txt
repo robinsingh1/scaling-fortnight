@@ -8,6 +8,7 @@ beautifulsoup4==4.3.2
 bugsnag==2.3.1
 feedparser==5.2.1
 raven==5.8.1
+grequests==0.2.0
 Flask==0.10.1
 Flask-HTTPAuth==2.5.0
 Flask-Login==0.2.11
