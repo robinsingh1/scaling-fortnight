@@ -14,8 +14,8 @@ def conn():
           auth_key=os.environ['RETHINKDB_AUTH_KEY']
         )
         conn = {
-          #host='rethinkdb_tunnel',
-          "host":os.environ['RETHINKDB_HOST'],
+          "host":'rethinkdb_tunnel',
+          #"host":os.environ['RETHINKDB_HOST'],
           "port":os.environ['RETHINKDB_TUNNEL_PORT_28015_TCP_PORT'],
           "db":os.environ['RETHINKDB_DB'],
           "auth_key":os.environ['RETHINKDB_AUTH_KEY']
