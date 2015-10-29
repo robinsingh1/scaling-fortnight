@@ -1,6 +1,8 @@
 APScheduler==3.0.3
 pystache==0.5.4
 blinker==1.4
+newrelic==2.56.0.42
+newspaper==0.0.9.8
 clearbit==0.1.2
 python-dateutil==2.4.2
 pytz==2015.4
