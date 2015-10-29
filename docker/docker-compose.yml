@@ -2,43 +2,44 @@ web:
   build: web/
   ports:
     - "80:5000"
-  env_file: /root/triggeriq.env
   restart: always
+  env_file: /root/triggeriq.env
   links:
     - rethinkdb_tunnel
 changefeed:
   build: changefeed/
-  env_file: /root/triggeriq.env
   restart: always
   links:
     - rethinkdb_tunnel
 clock:
   build: clock/
-  env_file: /root/triggeriq.env
   restart: always
+  env_file: /root/triggeriq.env
   links:
     - rethinkdb_tunnel
 worker:
   build: worker/
-  env_file: /root/triggeriq.env
   restart: always
+  env_file: /root/triggeriq.env
   links:
     - rethinkdb_tunnel
 rq_dashboard:
   build: rq_dashboard/
   ports:
     - "9181:9181"
-  env_file: /root/triggeriq.env
   restart: always
+  env_file: /root/triggeriq.env
   links:
     - rethinkdb_tunnel
 splash:
   image: scrapinghub/splash
   restart: always
+  env_file: /root/triggeriq.env
   ports:
     - "8950:8050"
 rethinkdb_tunnel:
   build: rethinkdb_tunnel/
   restart: always
+  env_file: /root/triggeriq.env
   ports:
     - "28015"
