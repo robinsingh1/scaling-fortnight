@@ -10,7 +10,6 @@ from datetime import datetime
 from crossdomain import crossdomain
 import rethinkdb as r
 import json
-from flask.ext.responses import json_response, xml_response, auto_response
 from scraping.company_api.company_name_to_domain import CompanyNameToDomain
 from scraping.email_pattern.email_hunter import EmailHunter
 from scraping.email_pattern.clearbit_search import ClearbitSearch
