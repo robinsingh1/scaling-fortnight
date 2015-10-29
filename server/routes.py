@@ -1,6 +1,5 @@
 import os
 from flask import Flask, send_from_directory, render_template, make_response
-#from flask.ext.login import LoginManager, UserMixin, current_user, login_user, logout_user, login_required
 import pandas as pd
 import bugsnag
 from bugsnag.flask import handle_exceptions
