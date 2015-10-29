@@ -6,7 +6,7 @@ import requests
 from bs4 import BeautifulSoup
 import tldextract
 import pandas as pd
-from pymongo import MongoClient
+#from pymongo import MongoClient
 import os
 from score import Score
 from company_score import CompanyScore
