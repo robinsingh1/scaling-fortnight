@@ -1,5 +1,6 @@
 APScheduler==3.0.3
 pystache==0.5.4
+blinker==1.4
 clearbit==0.1.2
 python-dateutil==2.4.2
 pytz==2015.4
